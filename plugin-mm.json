@@ -1,0 +1,11 @@
+{
+    "MetaModulePluginMaintainer": "Eric Gao",
+    "MetaModulePluginMaintainerEmail": "",
+    "MetaModulePluginMaintainerUrl": "",
+    "MetaModuleDescription": "Bidoo modules for MetaModule",
+    "MetaModuleIncludedModules": [
+        "ACnE",
+        "antN",
+        "BAFIS"
+    ]
+}

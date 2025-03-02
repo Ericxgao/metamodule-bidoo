@@ -5,7 +5,7 @@ events:
     kind: "message-v1"
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineSystem.cmake:200 (message)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       The target system is: Generic -  - ARM
@@ -16,7 +16,7 @@ events:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
@@ -47,7 +47,7 @@ events:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
@@ -62,7 +62,7 @@ events:
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
       
       The C compiler identification is GNU, found in:
-        /Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/3.30.3/CompilerIdC/CMakeCCompilerId.o
+        /Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/3.30.3/CompilerIdC/CMakeCCompilerId.o
       
   -
     kind: "message-v1"
@@ -70,7 +70,7 @@ events:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
@@ -101,7 +101,7 @@ events:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
@@ -116,14 +116,14 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
       
       The CXX compiler identification is GNU, found in:
-        /Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/3.30.3/CompilerIdCXX/CMakeCXXCompilerId.o
+        /Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/3.30.3/CompilerIdCXX/CMakeCXXCompilerId.o
       
   -
     kind: "message-v1"
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerId.cmake:1192 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Checking whether the ASM compiler is GNU using "--version" matched "(GNU assembler)|(GCC)|(Free Software Foundation)":
@@ -137,13 +137,13 @@ events:
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-MMXe0d"
-      binary: "/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-MMXe0d"
+      source: "/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-jtd1ZA"
+      binary: "/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-jtd1ZA"
     cmakeVariables:
       CMAKE_C_FLAGS: ""
       CMAKE_C_FLAGS_DEBUG: "-g"
@@ -152,10 +152,10 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-MMXe0d'
+        Change Dir: '/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-jtd1ZA'
         
-        Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_58528
-        [1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc   -v -o CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c
+        Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_440b5
+        [1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc   -v -o CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c
         Using built-in specs.
         COLLECT_GCC=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc
         Target: arm-none-eabi
@@ -163,8 +163,8 @@ events:
         Thread model: single
         Supported LTO compression algorithms: zlib
         gcc version 12.3.1 20230626 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_58528.dir/'
-         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1 -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_58528.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cchHwHjW.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_440b5.dir/'
+         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1 -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_440b5.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccuk2d04.s
         GNU C17 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) version 12.3.1 20230626 (arm-none-eabi)
         	compiled by GNU C version Apple LLVM 13.0.0 (clang-1300.0.29.30), GMP version 6.2.1, MPFR version 3.1.6, MPC version 1.0.3, isl version isl-0.15-1-g835ea3a-GMP
         
@@ -185,13 +185,13 @@ events:
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         Compiler executable checksum: f859eae457a951b217be15d206a277d6
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_58528.dir/'
-         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cchHwHjW.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_440b5.dir/'
+         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccuk2d04.s
         GNU assembler version 2.40.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) 2.40.0.20230627
         COMPILER_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/
         LIBRARY_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.'
-        [2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_58528.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_58528.a  CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_58528.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_58528.a && :
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.'
+        [2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_440b5.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_440b5.a  CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_440b5.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_440b5.a && :
         
       exitCode: 0
   -
@@ -199,7 +199,7 @@ events:
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Parsed C implicit include dir info: rv=done
@@ -220,16 +220,16 @@ events:
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Parsed C implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?))("|,| |$)]
-        ignore line: [Change Dir: '/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-MMXe0d']
+        ignore line: [Change Dir: '/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-jtd1ZA']
         ignore line: []
-        ignore line: [Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_58528]
-        ignore line: [[1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc   -v -o CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_440b5]
+        ignore line: [[1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc   -v -o CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc]
         ignore line: [Target: arm-none-eabi]
@@ -237,8 +237,8 @@ events:
         ignore line: [Thread model: single]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 12.3.1 20230626 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_58528.dir/']
-        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1 -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_58528.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cchHwHjW.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_440b5.dir/']
+        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1 -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_440b5.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccuk2d04.s]
         ignore line: [GNU C17 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) version 12.3.1 20230626 (arm-none-eabi)]
         ignore line: [	compiled by GNU C version Apple LLVM 13.0.0 (clang-1300.0.29.30)  GMP version 6.2.1  MPFR version 3.1.6  MPC version 1.0.3  isl version isl-0.15-1-g835ea3a-GMP]
         ignore line: []
@@ -259,13 +259,13 @@ events:
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [Compiler executable checksum: f859eae457a951b217be15d206a277d6]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_58528.dir/']
-        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cchHwHjW.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_440b5.dir/']
+        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccuk2d04.s]
         ignore line: [GNU assembler version 2.40.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) 2.40.0.20230627]
         ignore line: [COMPILER_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/]
         ignore line: [LIBRARY_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.']
-        ignore line: [[2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_58528.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_58528.a  CMakeFiles/cmTC_58528.dir/CMakeCCompilerABI.c.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_58528.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_58528.a && :]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.']
+        ignore line: [[2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_440b5.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_440b5.a  CMakeFiles/cmTC_440b5.dir/CMakeCCompilerABI.c.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_440b5.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_440b5.a && :]
         ignore line: []
         ignore line: []
         implicit libs: []
@@ -279,13 +279,13 @@ events:
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-gqTz0m"
-      binary: "/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-gqTz0m"
+      source: "/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-rIoCJv"
+      binary: "/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-rIoCJv"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -295,10 +295,10 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-gqTz0m'
+        Change Dir: '/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-rIoCJv'
         
-        Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_a2188
-        [1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++   -v -o CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_1a66f
+        [1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++   -v -o CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
         COLLECT_GCC=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++
         Target: arm-none-eabi
@@ -306,8 +306,8 @@ events:
         Thread model: single
         Supported LTO compression algorithms: zlib
         gcc version 12.3.1 20230626 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_a2188.dir/'
-         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1plus -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_a2188.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccnGGCgh.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_1a66f.dir/'
+         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1plus -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_1a66f.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cc4ZKUDI.s
         GNU C++17 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) version 12.3.1 20230626 (arm-none-eabi)
         	compiled by GNU C version Apple LLVM 13.0.0 (clang-1300.0.29.30), GMP version 6.2.1, MPFR version 3.1.6, MPC version 1.0.3, isl version isl-0.15-1-g835ea3a-GMP
         
@@ -334,13 +334,13 @@ events:
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         Compiler executable checksum: ea0df82b2cc92d22d7813c17b3aba7fa
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_a2188.dir/'
-         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccnGGCgh.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_1a66f.dir/'
+         /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cc4ZKUDI.s
         GNU assembler version 2.40.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) 2.40.0.20230627
         COMPILER_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/
         LIBRARY_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.'
-        [2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_a2188.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_a2188.a  CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_a2188.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_a2188.a && :
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.'
+        [2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_1a66f.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_1a66f.a  CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_1a66f.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_1a66f.a && :
         
       exitCode: 0
   -
@@ -348,7 +348,7 @@ events:
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Parsed CXX implicit include dir info: rv=done
@@ -375,16 +375,16 @@ events:
     backtrace:
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
       - "/opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
-      - "/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/plugin.cmake:2 (project)"
+      - "/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/plugin.cmake:2 (project)"
       - "CMakeLists.txt:8 (include)"
     message: |
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?))("|,| |$)]
-        ignore line: [Change Dir: '/Users/ericgao/Documents/Projects/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-gqTz0m']
+        ignore line: [Change Dir: '/Users/ericgao/Documents/Projects/ports/Bidoo/build/CMakeFiles/CMakeScratch/TryCompile-rIoCJv']
         ignore line: []
-        ignore line: [Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_a2188]
-        ignore line: [[1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++   -v -o CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): /Users/ericgao/anaconda3/bin/ninja -v cmTC_1a66f]
+        ignore line: [[1/2] /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++   -v -o CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj -c /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++]
         ignore line: [Target: arm-none-eabi]
@@ -392,8 +392,8 @@ events:
         ignore line: [Thread model: single]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 12.3.1 20230626 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_a2188.dir/']
-        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1plus -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_a2188.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccnGGCgh.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_1a66f.dir/']
+        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/cc1plus -quiet -v -iprefix /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/ -isysroot /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi -D__USES_INITFINI__ /opt/homebrew/Cellar/cmake/3.30.3/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_1a66f.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cc4ZKUDI.s]
         ignore line: [GNU C++17 (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) version 12.3.1 20230626 (arm-none-eabi)]
         ignore line: [	compiled by GNU C version Apple LLVM 13.0.0 (clang-1300.0.29.30)  GMP version 6.2.1  MPFR version 3.1.6  MPC version 1.0.3  isl version isl-0.15-1-g835ea3a-GMP]
         ignore line: []
@@ -420,13 +420,13 @@ events:
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [Compiler executable checksum: ea0df82b2cc92d22d7813c17b3aba7fa]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_a2188.dir/']
-        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//ccnGGCgh.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_1a66f.dir/']
+        ignore line: [ /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj /var/folders/pp/2k1_0bqj57z57cbc12h7_xsh0000gn/T//cc4ZKUDI.s]
         ignore line: [GNU assembler version 2.40.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 12.3.Rel1 (Build arm-12.35)) 2.40.0.20230627]
         ignore line: [COMPILER_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../libexec/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/]
         ignore line: [LIBRARY_PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/:/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../arm-none-eabi/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [[2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_a2188.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_a2188.a  CMakeFiles/cmTC_a2188.dir/CMakeCXXCompilerABI.cpp.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_a2188.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_a2188.a && :]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [[2/2] : && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f libcmTC_1a66f.a && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-gcc-ar qc libcmTC_1a66f.a  CMakeFiles/cmTC_1a66f.dir/CMakeCXXCompilerABI.cpp.obj && /Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/arm-none-eabi-ranlib libcmTC_1a66f.a && /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E touch libcmTC_1a66f.a && :]
         ignore line: []
         ignore line: []
         implicit libs: []

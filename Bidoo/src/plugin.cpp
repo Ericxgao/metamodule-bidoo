@@ -28,7 +28,7 @@ void init(rack::Plugin *p) {
 	p->addModel(modelDUKE);
 	// p->addModel(modelENCORE);
 	// // p->addModel(modelENCOREExpander);
-	// // p->addModel(modelEDSAROS);
+	p->addModel(modelEDSAROS);
 	// // p->addModel(modelEMILE);
 	// p->addModel(modelFLAME);
 	p->addModel(modelFORK);
@@ -46,7 +46,7 @@ void init(rack::Plugin *p) {
 	p->addModel(modelMS);
 	// // p->addModel(modelMU);
 	// // p->addModel(modelOAI);
-	// p->addModel(modelOUAIVE);
+	p->addModel(modelOUAIVE);
 	p->addModel(modelPERCO);
 	// // p->addModel(modelPILOT);
 	// // p->addModel(modelPOUPRE);

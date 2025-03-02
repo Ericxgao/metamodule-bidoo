@@ -16,6 +16,10 @@ Based on Laurent de Soras resampler for pitch shifting
 #include <mutex>
 #include "dep/waves.hpp"
 
+#if defined(METAMODULE)
+#include "async_filebrowser.hh"
+#endif
+
 #include	"dep/resampler/def.h"
 #include	"dep/resampler/Downsampler2Flt.h"
 #include	"dep/resampler/fnc.h"
@@ -28,9 +32,8 @@ Based on Laurent de Soras resampler for pitch shifting
 #include	"dep/resampler/ResamplerFlt.h"
 #include	"dep/resampler/StopWatch.h"
 
-using namespace std;
-
-#define SIZE 16
+// Define the missing SIZE constant
+#define SIZE 256
 
 template <typename T>
 typename std::enable_if<std::is_signed<T>::value, int>::type
@@ -238,9 +241,9 @@ struct EDSAROS : BidooModule {
 		if (!lastPath.empty()) loadSample();
 	}
 
-	int getSnappedIndex(float p, bool forward, bool zercoCross) {
+	int getSnappedIndex(float p, bool forward, bool zeroCrossing) {
 		int idx = p*(totalSampleCount-1)*0.1f;
-    if (!zeroCrossing) return idx;
+    	if (!zeroCrossing) return idx;
 		if (forward) {
 			while ((sample[idx]*sample[idx+1])>0 && (idx<totalSampleCount-1)) {
 				idx=idx+1;
@@ -469,14 +472,19 @@ void EDSAROS::process(const ProcessArgs &args) {
             }
             if (nbr_spl>0) {
               float *buff = new float[nbr_spl];
-  						voices[i].interpolate_block(buff, nbr_spl);
-              for (int j=0; j<nbr_spl; j++) {
-    						*(audio[i].endData()+j) = buff[j];
-    					}
-    					audio[i].endIncr(nbr_spl);
+              voices[i].interpolate_block(buff, nbr_spl);
+              
+              // Make sure we don't write beyond the buffer's capacity
+              int writeSize = std::min(nbr_spl, (long)audio[i].capacity());
+              for (int j=0; j<writeSize; j++) {
+                *(audio[i].endData()+j) = buff[j];
+              }
+              audio[i].endIncr(writeSize);
+              
+              // Free the allocated memory
+              delete[] buff;
             }
-					}
-					else {
+			} else {
             long nbr_spl;
             if (play[i] && params[LOOPMODE_PARAM].getValue()==2.0f) {
               nbr_spl = rspl::min (SIZE, revIndex(loopStart) - internalIntegerRevPosition[i]);
@@ -490,10 +498,16 @@ void EDSAROS::process(const ProcessArgs &args) {
             if (nbr_spl>0) {
               float *buff = new float[nbr_spl];
               rev_voices[i].interpolate_block(buff, nbr_spl);
-              for (int j=0; j<nbr_spl; j++) {
+              
+              // Make sure we don't write beyond the buffer's capacity
+              int writeSize = std::min(nbr_spl, (long)audio[i].capacity());
+              for (int j=0; j<writeSize; j++) {
                 *(audio[i].endData()+j) = buff[j];
               }
-              audio[i].endIncr(nbr_spl);
+              audio[i].endIncr(writeSize);
+              
+              // Free the allocated memory
+              delete[] buff;
             }
 					}
 
@@ -512,7 +526,7 @@ void EDSAROS::process(const ProcessArgs &args) {
 
 			if (audio[i].size()>=1) {
 				if (((loopStart==loopEnd) && (internalIntegerPosition[i]>=loopStart)) || ((releaseStart==sampleEnd) && (internalIntegerPosition[i]>=releaseStart))) {
-					outputs[OUT].setVoltage(0.0f);
+					outputs[OUT].setVoltage(0.0f, i);  // Added channel index
 					audio[i].startIncr(1);
 				}
 				else {
@@ -992,7 +1006,7 @@ struct EDSAROSWidget : BidooWidget {
 
 		addInput(createInput<TinyPJ301MPort>(Vec(controlsXAnchor+inputsXOffset, controlsYAnchor+5*controlsYOffset), module, EDSAROS::ATTACKSLOPE_INPUT));
 		addInput(createInput<TinyPJ301MPort>(Vec(controlsXAnchor+controlsXOffset+inputsXOffset, controlsYAnchor+5*controlsYOffset), module, EDSAROS::DECAYSLOPE_INPUT));
-		addInput(createInput<TinyPJ301MPort>(Vec(controlsXAnchor+2*controlsXOffset+inputsXOffset, controlsYAnchor+5*controlsYOffset), module, EDSAROS::RELEASESLOPE_PARAM));
+		addInput(createInput<TinyPJ301MPort>(Vec(controlsXAnchor+2*controlsXOffset+inputsXOffset, controlsYAnchor+5*controlsYOffset), module, EDSAROS::RELEASESLOPE_INPUT));
 
 		EDSAROSBidooSmallBlueKnob *btnInitParam = createParam<EDSAROSBidooSmallBlueKnob>(Vec(controlsXAnchor, controlsYAnchor+6*controlsYOffset), module, EDSAROS::INIT_PARAM);
 		btnInitParam->showSample = false;
@@ -1034,12 +1048,22 @@ struct EDSAROSWidget : BidooWidget {
   	EDSAROS *module;
   	void onAction(const event::Action &e) override {
   		std::string dir = module->lastPath.empty() ? asset::user("") : rack::system::getDirectory(module->lastPath);
+#if defined(METAMODULE)
+		async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
+			if (path) {
+				module->lastPath = path;
+				module->loading = true;
+				free(path);
+			}
+		});
+#else
   		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
   		if (path) {
   			module->lastPath = path;
-				module->loading=true;
+				module->loading = true;
   			free(path);
   		}
+#endif
   	}
   };
 

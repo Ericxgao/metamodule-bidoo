@@ -31,6 +31,7 @@
 #include <unordered_map>
 #include <iterator>
 #include <algorithm>
+#include <cstdio>  // For FILE*, fopen, fread, fwrite, etc.
 
 //=============================================================
 /** The different types of audio file, plus some other types to 
@@ -277,13 +278,13 @@ double AudioFile<T>::getLengthInSeconds() const
 template <class T>
 void AudioFile<T>::printSummary() const
 {
-    std::cout << "|======================================|" << std::endl;
-    std::cout << "Num Channels: " << getNumChannels() << std::endl;
-    std::cout << "Num Samples Per Channel: " << getNumSamplesPerChannel() << std::endl;
-    std::cout << "Sample Rate: " << sampleRate << std::endl;
-    std::cout << "Bit Depth: " << bitDepth << std::endl;
-    std::cout << "Length in Seconds: " << getLengthInSeconds() << std::endl;
-    std::cout << "|======================================|" << std::endl;
+    // std::cout << "|======================================|" << std::endl;
+    // std::cout << "Num Channels: " << getNumChannels() << std::endl;
+    // std::cout << "Num Samples Per Channel: " << getNumSamplesPerChannel() << std::endl;
+    // std::cout << "Sample Rate: " << sampleRate << std::endl;
+    // std::cout << "Bit Depth: " << bitDepth << std::endl;
+    // std::cout << "Length in Seconds: " << getLengthInSeconds() << std::endl;
+    // std::cout << "|======================================|" << std::endl;
 }
 
 //=============================================================
@@ -381,19 +382,31 @@ void AudioFile<T>::setSampleRate (uint32_t newSampleRate)
 template <class T>
 bool AudioFile<T>::load (std::string filePath)
 {
-    std::ifstream file (filePath, std::ios::binary);
+    // Open the file using C-style file I/O
+    FILE* file = fopen(filePath.c_str(), "rb");
     
     // check the file exists
-    if (! file.good())
+    if (!file)
     {
-        std::cout << "ERROR: File doesn't exist or otherwise can't load file" << std::endl;
-        std::cout << filePath << std::endl;
+        // std::cout << "ERROR: File doesn't exist or otherwise can't load file" << std::endl;
+        // std::cout << filePath << std::endl;
         return false;
     }
     
-    file.unsetf (std::ios::skipws);
-    std::istream_iterator<uint8_t> begin (file), end;
-    std::vector<uint8_t> fileData (begin, end);
+    // Get file size
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    
+    // Read file data into vector
+    std::vector<uint8_t> fileData(fileSize);
+    size_t bytesRead = fread(fileData.data(), 1, fileSize, file);
+    fclose(file);
+    
+    if (bytesRead != fileSize)
+    {
+        return false;
+    }
     
     // get audio file format
     audioFileFormat = determineAudioFileFormat (fileData);
@@ -408,7 +421,7 @@ bool AudioFile<T>::load (std::string filePath)
     }
     else
     {
-        std::cout << "Audio File Type: " << "Error" << std::endl;
+        // std::cout << "Audio File Type: " << "Error" << std::endl;
         return false;
     }
 }
@@ -432,7 +445,7 @@ bool AudioFile<T>::decodeWaveFile (std::vector<uint8_t>& fileData)
     // then it is unlikely we'll able to read this file, so abort
     if (indexOfDataChunk == -1 || indexOfFormatChunk == -1 || headerChunkID != "RIFF" || format != "WAVE")
     {
-        std::cout << "ERROR: this doesn't seem to be a valid .WAV file" << std::endl;
+        // std::cout << "ERROR: this doesn't seem to be a valid .WAV file" << std::endl;
         return false;
     }
     
@@ -453,28 +466,28 @@ bool AudioFile<T>::decodeWaveFile (std::vector<uint8_t>& fileData)
     // check that the audio format is PCM
     if (audioFormat != 1)
     {
-        std::cout << "ERROR: this is a compressed .WAV file and this library does not support decoding them at present" << std::endl;
+        // std::cout << "ERROR: this is a compressed .WAV file and this library does not support decoding them at present" << std::endl;
         return false;
     }
     
     // check the number of channels is mono or stereo
     if (numChannels < 1 ||numChannels > 2)
     {
-        std::cout << "ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
+        // std::cout << "ERROR: this WAV file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
         return false;
     }
     
     // check header data is consistent
     if ((numBytesPerSecond != (numChannels * sampleRate * bitDepth) / 8) || (numBytesPerBlock != (numChannels * numBytesPerSample)))
     {
-        std::cout << "ERROR: the header data in this WAV file seems to be inconsistent" << std::endl;
+        // std::cout << "ERROR: the header data in this WAV file seems to be inconsistent" << std::endl;
         return false;
     }
     
     // check bit depth is either 8, 16 or 24 bit
     if (bitDepth != 8 && bitDepth != 16 && bitDepth != 24)
     {
-        std::cout << "ERROR: this file has a bit depth that is not 8, 16 or 24 bits" << std::endl;
+        // std::cout << "ERROR: this file has a bit depth that is not 8, 16 or 24 bits" << std::endl;
         return false;
     }
     
@@ -547,7 +560,7 @@ bool AudioFile<T>::decodeAiffFile (std::vector<uint8_t>& fileData)
     // then it is unlikely we'll able to read this file, so abort
     if (indexOfSoundDataChunk == -1 || indexOfCommChunk == -1 || headerChunkID != "FORM" || format != "AIFF")
     {
-        std::cout << "ERROR: this doesn't seem to be a valid AIFF file" << std::endl;
+        // std::cout << "ERROR: this doesn't seem to be a valid AIFF file" << std::endl;
         return false;
     }
 
@@ -564,21 +577,21 @@ bool AudioFile<T>::decodeAiffFile (std::vector<uint8_t>& fileData)
     // check the sample rate was properly decoded
     if (sampleRate == 0)
     {
-        std::cout << "ERROR: this AIFF file has an unsupported sample rate" << std::endl;
+        // std::cout << "ERROR: this AIFF file has an unsupported sample rate" << std::endl;
         return false;
     }
     
     // check the number of channels is mono or stereo
     if (numChannels < 1 ||numChannels > 2)
     {
-        std::cout << "ERROR: this AIFF file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
+        // std::cout << "ERROR: this AIFF file seems to be neither mono nor stereo (perhaps multi-track, or corrupted?)" << std::endl;
         return false;
     }
     
     // check bit depth is either 8, 16 or 24 bit
     if (bitDepth != 8 && bitDepth != 16 && bitDepth != 24)
     {
-        std::cout << "ERROR: this file has a bit depth that is not 8, 16 or 24 bits" << std::endl;
+        // std::cout << "ERROR: this file has a bit depth that is not 8, 16 or 24 bits" << std::endl;
         return false;
     }
     
@@ -598,7 +611,7 @@ bool AudioFile<T>::decodeAiffFile (std::vector<uint8_t>& fileData)
     // sanity check the data
     if ((soundDataChunkSize - 8) != totalNumAudioSampleBytes || totalNumAudioSampleBytes > (fileData.size() - samplesStartIndex))
     {
-        std::cout << "ERROR: the metadatafor this file doesn't seem right" << std::endl;
+        // std::cout << "ERROR: the metadatafor this file doesn't seem right" << std::endl;
         return false;
     }
     
@@ -775,7 +788,7 @@ bool AudioFile<T>::saveToWaveFile (std::string filePath)
     // check that the various sizes we put in the metadata are correct
     if (fileSizeInBytes != (fileData.size() - 8) || dataChunkSize != (getNumSamplesPerChannel() * getNumChannels() * (bitDepth / 8)))
     {
-        std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
+        // std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
         return false;
     }
     
@@ -859,7 +872,7 @@ bool AudioFile<T>::saveToAiffFile (std::string filePath)
     // check that the various sizes we put in the metadata are correct
     if (fileSizeInBytes != (fileData.size() - 8) || soundDataChunkSize != getNumSamplesPerChannel() *  numBytesPerFrame + 8)
     {
-        std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
+        // std::cout << "ERROR: couldn't save file to " << filePath << std::endl;
         return false;
     }
     
@@ -871,19 +884,16 @@ bool AudioFile<T>::saveToAiffFile (std::string filePath)
 template <class T>
 bool AudioFile<T>::writeDataToFile (std::vector<uint8_t>& fileData, std::string filePath)
 {
-    std::ofstream outputFile (filePath, std::ios::binary);
+    // Open file using C-style file I/O
+    FILE* outputFile = fopen(filePath.c_str(), "wb");
     
-    if (outputFile.is_open())
+    if (outputFile)
     {
-        for (int i = 0; i < fileData.size(); i++)
-        {
-            char value = (char) fileData[i];
-            outputFile.write (&value, sizeof (char));
-        }
+        // Write all data at once
+        size_t bytesWritten = fwrite(fileData.data(), 1, fileData.size(), outputFile);
+        fclose(outputFile);
         
-        outputFile.close();
-        
-        return true;
+        return (bytesWritten == fileData.size());
     }
     
     return false;

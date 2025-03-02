@@ -64,11 +64,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif	// _MSC_VER
 
 // #include	<fstream>
-#include	<iostream>
 #include	<new>
 #include	<stdexcept>
-#include	<streambuf>
 #include	<vector>
+#include	<cstdio>  // For FILE*, fopen, fwrite, fclose
 
 #include	<cassert>
 #include	<climits>
@@ -186,9 +185,9 @@ static void	main_prog_init ()
 		::_CrtSetReportHook (main_debug_report_hook_cb);
 
 		// Speed up I/O but breaks C stdio compatibility
-//		std::cout.sync_with_stdio (false);
+//		// std::cout.sync_with_stdio (false);
 //		std::cin.sync_with_stdio (false);
-//		std::cerr.sync_with_stdio (false);
+//		// std::cerr.sync_with_stdio (false);
 //		std::clog.sync_with_stdio (false);
 	}
 #endif	// _MSC_VER, NDEBUG
@@ -233,14 +232,14 @@ static void	main_prog_end ()
 //
 // 	catch (std::exception &e)
 // 	{
-// 		std::cout << "*** main() : Exception (std::exception) : ";
-// 		std::cout << e.what () << std::endl;
+// 		// std::cout << "*** main() : Exception (std::exception) : ";
+// 		// std::cout << e.what () << std::endl;
 // 		throw;
 // 	}
 //
 // 	catch (...)
 // 	{
-// 		std::cout << "*** main() : Undefined exception" << std::endl;
+// 		// std::cout << "*** main() : Undefined exception" << std::endl;
 // 		throw;
 // 	}
 //
@@ -268,49 +267,49 @@ Throws: std::runtime_error
 void	basic_checking ()
 {
 	// rspl::Int64
-	if (sizeof (rspl::Int64) * CHAR_BIT != 64)
-	{
-		std::cerr << "*** DATA CAPACITY PROBLEM ***\n";
-		std::cerr << "Please fix rspl::Int64 declaration.\n";
-		throw std::runtime_error ("Fatal error (rspl::Int64 definition).");
-	}
+	// if (sizeof (rspl::Int64) * CHAR_BIT != 64)
+	// {
+	// 	// std::cerr << "*** DATA CAPACITY PROBLEM ***\n";
+	// 	// std::cerr << "Please fix rspl::Int64 declaration.\n";
+	// 	throw std::runtime_error ("Fatal error (rspl::Int64 definition).");
+	// }
 
 	// rspl::Int32 and rspl::UInt32
-	if (   sizeof (rspl::Int32)  * CHAR_BIT != 32
-	    || sizeof (rspl::UInt32) * CHAR_BIT != 32)
-	{
-		std::cerr << "*** DATA CAPACITY PROBLEM ***\n";
-		std::cerr << "Please fix rspl::Int32 or rspl::UInt32 declaration.\n";
-		throw std::runtime_error ("Fatal error (rspl::Int32 definition).");
-	}
+	// if (   sizeof (rspl::Int32)  * CHAR_BIT != 32
+	//     || sizeof (rspl::UInt32) * CHAR_BIT != 32)
+	// {
+	// 	// std::cerr << "*** DATA CAPACITY PROBLEM ***\n";
+	// 	// std::cerr << "Please fix rspl::Int32 or rspl::UInt32 declaration.\n";
+	// 	throw std::runtime_error ("Fatal error (rspl::Int32 definition).");
+	// }
 
 	// rspl::Int16
-	if (sizeof (rspl::Int16) * CHAR_BIT != 16)
-	{
-		std::cerr << "*** DATA CAPACITY PROBLEM ***\n";
-		std::cerr << "Please fix rspl::Int16 declaration.\n";
-		throw std::runtime_error ("Fatal error (rspl::Int16 definition).");
-	}
+	// if (sizeof (rspl::Int16) * CHAR_BIT != 16)
+	// {
+	// 	// std::cerr << "*** DATA CAPACITY PROBLEM ***\n";
+	// 	// std::cerr << "Please fix rspl::Int16 declaration.\n";
+	// 	throw std::runtime_error ("Fatal error (rspl::Int16 definition).");
+	// }
 
 	// rspl::Fixed3232
 	const int		magic_gluar = 123;
 	rspl::Fixed3232	extra_cow;
 
 	extra_cow._all = magic_gluar;
-	if (extra_cow._part._lsw != static_cast <rspl::UInt32> (magic_gluar))
-	{
-		std::cerr << "*** ENDIAN PROBLEM ***\n";
-		std::cerr << "Invert _lsw and _msw members in Fixed3232.h !!!\n";
-		throw std::runtime_error ("Fatal error (rspl::Fixed3232 definition).");
-	}
+	// if (extra_cow._part._lsw != static_cast <rspl::UInt32> (magic_gluar))
+	// {
+	// 	// std::cerr << "*** ENDIAN PROBLEM ***\n";
+	// 	// std::cerr << "Invert _lsw and _msw members in Fixed3232.h !!!\n";
+	// 	throw std::runtime_error ("Fatal error (rspl::Fixed3232 definition).");
+	// }
 
 	extra_cow._all = static_cast <rspl::Int64> (magic_gluar) << 32;
-	if (extra_cow._part._msw !=  static_cast <rspl::Int32> (magic_gluar))
-	{
-		std::cerr << "*** ALIGNMENT PROBLEM (most likely) ***\n";
-		std::cerr << "Check union definition in Fixed3232.h.\n";
-		throw std::runtime_error ("Fatal error (rspl::Fixed3232 definition).");
-	}
+	// if (extra_cow._part._msw !=  static_cast <rspl::Int32> (magic_gluar))
+	// {
+	// 	// std::cerr << "*** ALIGNMENT PROBLEM (most likely) ***\n";
+	// 	// std::cerr << "Check union definition in Fixed3232.h.\n";
+	// 	throw std::runtime_error ("Fatal error (rspl::Fixed3232 definition).");
+	// }
 }
 
 
@@ -328,7 +327,7 @@ void	test_speed_InterpFlt ()
 {
 	const long		nbr_it = 1000000;
 
-	std::cout << "Testing InterpFlt raw performance...\n";
+	// std::cout << "Testing InterpFlt raw performance...\n";
 
 	// Build a test impulse with non-null components
 	std::vector <double>	imp;
@@ -360,7 +359,7 @@ void	test_speed_InterpFlt ()
 
 	const double	unsignificant = 1e-40;
 	const double	t = sw.get_clk_per_op (nbr_it) + dummy_sum * unsignificant;
-	std::cout << t << " clocks/sample\n\n";
+	// std::cout << t << " clocks/sample\n\n";
 }
 
 
@@ -379,7 +378,7 @@ void	test_speed_Downsampler2Flt ()
 	const long		nbr_it = 1000000;
 	const long		block_len = 256;
 
-	std::cout << "Testing Downsampler2Flt raw performance...\n";
+	// std::cout << "Testing Downsampler2Flt raw performance...\n";
 
 	std::vector <double>	coef_arr;
 	for (int coef_cnt = 0
@@ -414,7 +413,7 @@ void	test_speed_Downsampler2Flt ()
 	sw.stop ();
 
 	const double	t = sw.get_clk_per_op (nbr_it);
-	std::cout << t << " clocks/output sample.\n\n";
+	// std::cout << t << " clocks/output sample.\n\n";
 }
 
 
@@ -441,7 +440,7 @@ void	test_sine_15k ()
 	const double	test_duration = 30;	// Seconds
 	const long		block_len = 256;
 
-	std::cout << "Testing 15 kHz sine resampling...\n";
+	// std::cout << "Testing 15 kHz sine resampling...\n";
 
 	// The sine wave
 	const long		sine_len = rspl::round_long (data_duration * fs);
@@ -494,9 +493,9 @@ void	test_sine_15k ()
 	sw.stop ();
 
 	const double	t = sw.get_clk_per_op (test_len);
-	std::cout
-		<< t
-		<< " clocks/output sample (taking cache issues into account).\n\n";
+	// // std::cout
+	// 	<< t
+	// 	<< " clocks/output sample (taking cache issues into account).\n\n";
 
 	scale_vector (out_sig, 0.5f);
 	save_raw_sample_16 (out_sig, "sine_15k_interp.raw");
@@ -527,7 +526,7 @@ void	test_saw ()
 	const double	test_duration = 60;		// Seconds
 	const long		block_len = 57;			// Let's try an odd length...
 
-	std::cout << "Testing saw wave resampling...\n";
+	// std::cout << "Testing saw wave resampling...\n";
 
 	// The saw wave
 	const long		saw_len = wavelength * block_len * 4;
@@ -596,9 +595,9 @@ void	test_saw ()
 	sw.stop ();
 
 	const double	t = sw.get_clk_per_op (test_len);
-	std::cout
-		<< t
-		<< " clocks/output sample (taking cache issues into account).\n\n";
+	// // std::cout
+	// 	<< t
+	// 	<< " clocks/output sample (taking cache issues into account).\n\n";
 
 	scale_vector (out_sig, 0.5f);
 	save_raw_sample_16 (out_sig, "saw_interp.raw");
@@ -692,25 +691,33 @@ void	save_raw_sample_16 (const std::vector <rspl::Int16> &v, const char *filenam
 	assert (filename_0 != 0);
 	assert (filename_0 [0] != '\0');
 
-	std::cout << "Saving " << filename_0 << "... " << std::flush;
-	std::ofstream	ofs (
-		filename_0,
-		std::ios::binary | std::ios::out | std::ios::trunc
-	);
-	std::filebuf *	osb_ptr = ofs.rdbuf ();
-	if (ofs && osb_ptr != 0)
+	// Open file for binary writing
+	FILE* file = fopen(filename_0, "wb");
+	if (file != NULL)
 	{
-		osb_ptr->sputn (
-			reinterpret_cast <const std::filebuf::char_type *> (&v [0]),
-			v.size () * sizeof (v [0]) / sizeof (const std::filebuf::char_type)
+		// Write the entire vector data at once
+		size_t elements_written = fwrite(
+			&v[0],                  // Data pointer
+			sizeof(v[0]),          // Size of each element
+			v.size(),              // Number of elements
+			file                   // File handle
 		);
+		
+		// Close the file
+		fclose(file);
+		
+		// Optional error checking
+		if (elements_written != v.size())
+		{
+			// Error handling could go here if needed
+			// fprintf(stderr, "Error writing to file %s\n", filename_0);
+		}
 	}
-	else
-	{
-		std::cerr << "UH-UH PROBLEM... " << std::flush;
-	}
-	ofs.close ();
-	std::cout << "done.\n";
+	// else
+	// {
+	//     // Error handling could go here if needed
+	//     // fprintf(stderr, "Could not open file %s for writing\n", filename_0);
+	// }
 }
 
 

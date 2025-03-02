@@ -1,4 +1,4 @@
-# Install script for directory: /Users/ericgao/Documents/Projects/metamodule-plugin-sdk/metamodule-core-interface
+# Install script for directory: /Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/metamodule-core-interface
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

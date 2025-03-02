@@ -35,6 +35,7 @@ target_compile_options(Bidoo PRIVATE
     -fno-use-cxa-atexit
     $<$<CXX_COMPILER_ID:GNU>:-fvisibility=hidden>
     $<$<CXX_COMPILER_ID:GNU>:-fvisibility-inlines-hidden>
+    $<$<COMPILE_LANGUAGE:CXX>:-include ${CMAKE_CURRENT_LIST_DIR}/src/mutex-stub.hh>
 )
 
 # Add linker flags for static linking
@@ -62,6 +63,7 @@ target_sources(Bidoo PRIVATE
     ${SRC_DIR}/DTROY.cpp
     ${SRC_DIR}/DUKE.cpp
     ${SRC_DIR}/DFUZE.cpp
+    ${SRC_DIR}/EDSAROS.cpp
     ${SRC_DIR}/FREIN.cpp
     ${SRC_DIR}/FORK.cpp
     ${SRC_DIR}/HCTIP.cpp
@@ -73,6 +75,7 @@ target_sources(Bidoo PRIVATE
     ${SRC_DIR}/LOURDE.cpp
     ${SRC_DIR}/MINIBAR.cpp
     ${SRC_DIR}/MS.cpp
+    ${SRC_DIR}/OUAIVE.cpp
     ${SRC_DIR}/plugin.cpp
     ${SRC_DIR}/PERCO.cpp
     ${SRC_DIR}/RABBIT.cpp
@@ -83,12 +86,18 @@ target_sources(Bidoo PRIVATE
     ${SRC_DIR}/TOCANTE.cpp
     ${SRC_DIR}/ZINC.cpp
     # Add dependency files as needed
+    ${DEP_DIR}/waves.cpp
     # ${DEP_DIR}/filters/*.cpp
     # ${DEP_DIR}/freeverb/*.cpp
     # ${DEP_DIR}/gverb/src/*.c
     # ${DEP_DIR}/lodepng/*.cpp
     # ${DEP_DIR}/pffft/*.c
-    # ${DEP_DIR}/resampler/*.cpp
+    ${DEP_DIR}/resampler/main.cpp
+    ${DEP_DIR}/resampler/ResamplerFlt.cpp
+    ${DEP_DIR}/resampler/BaseVoiceState.cpp
+    ${DEP_DIR}/resampler/Downsampler2Flt.cpp
+    ${DEP_DIR}/resampler/InterpPack.cpp
+    ${DEP_DIR}/resampler/MipMapFlt.cpp
 )
 
 # Add include directories

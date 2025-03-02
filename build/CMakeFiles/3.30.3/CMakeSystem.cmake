@@ -3,7 +3,7 @@ set(CMAKE_HOST_SYSTEM_NAME "Darwin")
 set(CMAKE_HOST_SYSTEM_VERSION "23.6.0")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "arm64")
 
-include("/Users/ericgao/Documents/Projects/metamodule-plugin-sdk/cmake/arm-none-eabi-gcc.cmake")
+include("/Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk/cmake/arm-none-eabi-gcc.cmake")
 
 set(CMAKE_SYSTEM "Generic")
 set(CMAKE_SYSTEM_NAME "Generic")

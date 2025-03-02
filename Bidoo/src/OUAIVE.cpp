@@ -4,10 +4,14 @@
 #include "osdialog.h"
 #include <vector>
 #include "cmath"
-#include <iomanip>
+// #include <iomanip>
 // #include <sstream>
 #include <mutex>
 #include "dep/waves.hpp"
+
+#if defined(METAMODULE)
+#include "async_filebrowser.hh"
+#endif
 
 using namespace std;
 
@@ -124,15 +128,15 @@ void OUAIVE::process(const ProcessArgs &args) {
 	if (loading) {
 		loadSample();
 	}
-	if (trigModeTrigger.process(params[TRIG_MODE_PARAM].getValue())) {
+	if (trigModeTrigger.process(roundf(params[TRIG_MODE_PARAM].getValue()))) {
 		trigMode = (((int)trigMode + 1) % 3);
 	}
 	if (inputs[READ_MODE_INPUT].isConnected()) {
 		readMode = round(rescale(inputs[READ_MODE_INPUT].getVoltage(), 0.0f,10.0f,0.0f,2.0f));
-	} else if (readModeTrigger.process(params[READ_MODE_PARAM].getValue() + inputs[READ_MODE_INPUT].getVoltage())) {
+	} else if (readModeTrigger.process(roundf(params[READ_MODE_PARAM].getValue() + inputs[READ_MODE_INPUT].getVoltage()))) {
 		readMode = (((int)readMode + 1) % 3);
 	}
-	nbSlices = clamp(roundl(params[NB_SLICES_PARAM].getValue() + params[CVSLICES_PARAM].getValue() * inputs[NB_SLICES_INPUT].getVoltage()), 1, 128);
+	nbSlices = clamp((int)round(params[NB_SLICES_PARAM].getValue() + params[CVSLICES_PARAM].getValue() * inputs[NB_SLICES_INPUT].getVoltage()), 1, 128);
 	speed = clamp(params[SPEED_PARAM].getValue() + params[CVSPEED_PARAM].getValue() * inputs[SPEED_INPUT].getVoltage(), 0.2f, 10.0f);
 
 	sliceLength = clamp(totalSampleCount / nbSlices, 1, totalSampleCount);
@@ -323,10 +327,8 @@ struct OUAIVEDisplay : OpaqueWidget {
 
 				nvgTextBox(args.vg, 40, -15, 40, readMode.c_str(), NULL);
 
-				stringstream stream;
-				stream << fixed << setprecision(1) << module->speed;
-				std::string s = stream.str();
-				std::string speed = "x" + s;
+				char speedStr[16];
+				std::string speed = speedStr;
 
 				nvgTextBox(args.vg, 90, -15, 40, speed.c_str(), NULL);
 
@@ -492,14 +494,26 @@ struct OUAIVEWidget : BidooWidget {
   	void onAction(const event::Action &e) override {
 
   		std::string dir = module->lastPath.empty() ? asset::user("") : rack::system::getDirectory(module->lastPath);
-  		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
-  		if (path) {
-  			module->samplePos = 0;
-  			module->lastPath = path;
-  			module->sliceIndex = -1;
-				module->loading=true;
-  			free(path);
-  		}
+#if defined(METAMODULE)
+		async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
+			if (path) {
+				module->samplePos = 0;
+				module->lastPath = path;
+				module->sliceIndex = -1;
+				module->loading = true;
+				free(path);
+			}
+		});
+#else
+		char *path = osdialog_file(OSDIALOG_OPEN_DIR, dir.c_str(), NULL, NULL);
+		if (path) {
+			module->samplePos = 0;
+			module->lastPath = path;
+			module->sliceIndex = -1;
+			module->loading = true;
+			free(path);
+		}
+#endif
   	}
   };
 

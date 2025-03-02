@@ -1,4 +1,4 @@
-# Install script for directory: /Users/ericgao/Documents/Projects/metamodule-plugin-sdk
+# Install script for directory: /Users/ericgao/Documents/Projects/ports/metamodule-plugin-sdk
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,21 +39,21 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/ericgao/Documents/Projects/Bidoo/build/plugin-sdk/metamodule-rack-interface/cmake_install.cmake")
+  include("/Users/ericgao/Documents/Projects/ports/Bidoo/build/plugin-sdk/metamodule-rack-interface/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/ericgao/Documents/Projects/Bidoo/build/plugin-sdk/metamodule-core-interface/cmake_install.cmake")
+  include("/Users/ericgao/Documents/Projects/ports/Bidoo/build/plugin-sdk/metamodule-core-interface/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/ericgao/Documents/Projects/Bidoo/build/plugin-sdk/metamodule-plugin-libc/cmake_install.cmake")
+  include("/Users/ericgao/Documents/Projects/ports/Bidoo/build/plugin-sdk/metamodule-plugin-libc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/ericgao/Documents/Projects/Bidoo/build/plugin-sdk/cpputil/cmake_install.cmake")
+  include("/Users/ericgao/Documents/Projects/ports/Bidoo/build/plugin-sdk/cpputil/cmake_install.cmake")
 endif()
 

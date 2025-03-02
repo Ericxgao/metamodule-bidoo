@@ -1,15 +1,21 @@
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
-#include "osdialog.h"
 #include <vector>
-#include "cmath"
+#include <cmath>
 #include <iomanip>
 // #include <sstream>
 #include <algorithm>
 #include <mutex>
 #include "dep/waves.hpp"
 
+#if defined(METAMODULE)
+#include "async_filebrowser.hh"
+#else
+#include "osdialog.h"
+#endif
+
+using namespace rack;
 using namespace std;
 
 struct CANARD : BidooModule {
@@ -104,6 +110,13 @@ struct CANARD : BidooModule {
 		recordBuffer.resize(0);
 	}
 
+	~CANARD() {
+		std::lock_guard<std::mutex> lock(mylock);
+		playBuffer.clear();
+		recordBuffer.clear();
+		slices.clear();
+	}
+
 	void process(const ProcessArgs &args) override;
 
 	void calcLoop();
@@ -187,32 +200,50 @@ void CANARD::calcTransients() {
 }
 
 void CANARD::loadSample() {
+	std::lock_guard<std::mutex> lock(mylock);
+	
+	if (!APP) return;
+	
 	APP->engine->yieldWorkers();
-	mylock.lock();
-	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
-	mylock.unlock();
+	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), 
+								   waveFileName, waveExtension, 
+								   channels, sampleRate, totalSampleCount);
 	slices.clear();
 	loading = false;
 }
 
 void CANARD::saveSample() {
+	std::lock_guard<std::mutex> lock(mylock);
+	
+	if (!APP) return;
+	
 	APP->engine->yieldWorkers();
-	mylock.lock();
 	waves::saveWave(playBuffer, APP->engine->getSampleRate(), lastPath);
-	mylock.unlock();
 	save = false;
 }
 
 void CANARD::calcLoop() {
+	if (slices.empty()) return;
+	
 	prevPlayedSlice = index;
 	index = 0;
-	int sliceStart = 0;;
+	int sliceStart = 0;
 	int sliceEnd = totalSampleCount > 0 ? totalSampleCount - 1 : 0;
-	if ((params[MODE_PARAM].getValue() == 1) && (slices.size()>0))
-	{
-		index = round(clamp(params[SLICE_PARAM].getValue() + inputs[SLICE_INPUT].getVoltage(), 0.0f,10.0f)*(slices.size()-1)/10);
+
+	if (params[MODE_PARAM].getValue() == 1 && !slices.empty()) {
+		index = std::clamp(
+			(size_t)round(rescale(
+				clamp(params[SLICE_PARAM].getValue() + inputs[SLICE_INPUT].getVoltage(), 0.0f, 10.0f),
+				0.0f, 10.0f, 0.0f, slices.size()-1
+			)),
+			(size_t)0,
+			slices.size()-1
+		);
+		
 		sliceStart = slices[index];
-		sliceEnd = (index < (slices.size() - 1)) ? (slices[index+1] - 1) : (totalSampleCount - 1);
+		sliceEnd = (index < (slices.size() - 1)) ? 
+				   (slices[index+1] - 1) : 
+				   (totalSampleCount - 1);
 	}
 
 	if (totalSampleCount > 0) {
@@ -465,12 +496,20 @@ void CANARD::process(const ProcessArgs &args) {
 			else
 				fadeCoeff = 1.0f;
 
-			int xi = samplePos;
+			int xi = std::clamp((int)samplePos, 0, (int)playBuffer.size()-1);
+			int nextXi = std::min(xi + 1, (int)playBuffer.size()-1);
+			
 			float xf = samplePos - xi;
-			float crossfaded = crossfade(playBuffer[xi].samples[0], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[0], xf);
-			outputs[OUTL_OUTPUT].setVoltage(crossfaded*fadeCoeff*5.0f);
-			crossfaded = crossfade(playBuffer[xi].samples[1], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[1], xf);
-			outputs[OUTR_OUTPUT].setVoltage(crossfaded*fadeCoeff*5.0f);
+			
+			if (xi < (int)playBuffer.size() && nextXi < (int)playBuffer.size()) {
+				float crossfaded = crossfade(playBuffer[xi].samples[0], 
+										   playBuffer[nextXi].samples[0], xf);
+				outputs[OUTL_OUTPUT].setVoltage(crossfaded * fadeCoeff * 5.0f);
+				
+				crossfaded = crossfade(playBuffer[xi].samples[1], 
+									 playBuffer[nextXi].samples[1], xf);
+				outputs[OUTR_OUTPUT].setVoltage(crossfaded * fadeCoeff * 5.0f);
+			}
 		}
 	}
 	else {
@@ -804,12 +843,22 @@ struct CANARDWidget : BidooWidget {
 		CANARD *module;
 		void onAction(const event::Action &e) override {
 			std::string dir = module->lastPath.empty() ? asset::user("") : rack::system::getDirectory(module->lastPath);
+			#if defined(METAMODULE)
+			async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
+				if (path) {
+					module->lastPath = path;
+					module->loading=true;
+					free(path);
+				}
+			});
+			#else
 			char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
 			if (path) {
 				module->lastPath = path;
 				module->loading=true;
 				free(path);
 			}
+			#endif
 		}
 	};
 
@@ -825,12 +874,22 @@ struct CANARDWidget : BidooWidget {
 		void onAction(const event::Action &e) override {
 			std::string dir = module->lastPath.empty() ? asset::user("") : rack::system::getDirectory(module->lastPath);
 			std::string fileName = module->waveFileName.empty() ? "temp.wav" : module->waveFileName;
+			#if defined(METAMODULE)
+			async_osdialog_file(OSDIALOG_SAVE, dir.c_str(), fileName.c_str(), NULL, [this](char *path) {
+				if (path) {
+					module->lastPath = path;
+					if (!module->save) module->save = true;
+					free(path);
+				}
+			});
+			#else
 			char *path = osdialog_file(OSDIALOG_SAVE, dir.c_str(), fileName.c_str(), NULL);
 			if (path) {
 				module->lastPath = path;
 				if (!module->save) module->save = true;
 				free(path);
 			}
+			#endif
 		}
 	};
 

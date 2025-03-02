@@ -8,7 +8,6 @@ Based on Laurent de Soras resampler for pitch shifting
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
-#include "osdialog.h"
 #include <vector>
 #include "cmath"
 #include <iomanip>
@@ -18,6 +17,8 @@ Based on Laurent de Soras resampler for pitch shifting
 
 #if defined(METAMODULE)
 #include "async_filebrowser.hh"
+#else
+#include "osdialog.h"
 #endif
 
 #include	"dep/resampler/def.h"

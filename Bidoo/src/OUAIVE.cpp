@@ -1,18 +1,19 @@
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
-#include "osdialog.h"
 #include <vector>
-#include "cmath"
-// #include <iomanip>
-// #include <sstream>
+#include <cmath>
 #include <mutex>
 #include "dep/waves.hpp"
+#include <algorithm> // For std::min
 
 #if defined(METAMODULE)
 #include "async_filebrowser.hh"
+#else
+#include "osdialog.h"
 #endif
 
+using namespace rack;
 using namespace std;
 
 struct OUAIVE : BidooModule {
@@ -117,9 +118,15 @@ struct OUAIVE : BidooModule {
 };
 
 void OUAIVE::loadSample() {
+	if (lastPath.empty()) {
+		loading = false;
+		return;
+	}
+
 	APP->engine->yieldWorkers();
 	mylock.lock();
-	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
+	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), 
+		waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
 	mylock.unlock();
 	loading = false;
 }
@@ -173,27 +180,48 @@ void OUAIVE::process(const ProcessArgs &args) {
 
 	if (play && (samplePos>=0) && (samplePos < totalSampleCount)) {
 		if (channels == 1) {
-			int xi = samplePos;
-			float xf = samplePos - xi;
-			float crossfaded = crossfade(playBuffer[xi].samples[0], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[0], xf);
-			outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
-			outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
-		}
-		else if (channels == 2) {
-			if (outputs[OUTL_OUTPUT].isConnected() && outputs[OUTR_OUTPUT].isConnected()) {
-				int xi = samplePos;
+			int xi = static_cast<int>(samplePos);
+			if (xi < playBuffer.size()) {
 				float xf = samplePos - xi;
-				float crossfaded = crossfade(playBuffer[xi].samples[0], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[0], xf);
+				float nextSample = (xi + 1 < playBuffer.size()) ? 
+					playBuffer[xi + 1].samples[0] : 
+					playBuffer[xi].samples[0];
+				float crossfaded = crossfade(playBuffer[xi].samples[0], nextSample, xf);
 				outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
-				crossfaded = crossfade(playBuffer[xi].samples[1], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[1], xf);
 				outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
 			}
-			else {
-				int xi = samplePos;
+		}
+		else if (channels == 2) {
+			int xi = static_cast<int>(samplePos);
+			if (xi < playBuffer.size()) {
 				float xf = samplePos - xi;
-				float crossfaded = crossfade(0.5f*(playBuffer[xi].samples[0]+playBuffer[xi].samples[1]), 0.5f*(playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[0]+playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[1]), xf);
-				outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
-				outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
+				if (outputs[OUTL_OUTPUT].isConnected() && outputs[OUTR_OUTPUT].isConnected()) {
+					float nextSampleL = (xi + 1 < playBuffer.size()) ? 
+						playBuffer[xi + 1].samples[0] : 
+						playBuffer[xi].samples[0];
+					float crossfadedL = crossfade(playBuffer[xi].samples[0], nextSampleL, xf);
+					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfadedL);
+
+					float nextSampleR = (xi + 1 < playBuffer.size()) ? 
+						playBuffer[xi + 1].samples[1] : 
+						playBuffer[xi].samples[1];
+					float crossfadedR = crossfade(playBuffer[xi].samples[1], nextSampleR, xf);
+					outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfadedR);
+				}
+				else {
+					float nextSampleL = (xi + 1 < playBuffer.size()) ? 
+						playBuffer[xi + 1].samples[0] : 
+						playBuffer[xi].samples[0];
+					float nextSampleR = (xi + 1 < playBuffer.size()) ? 
+						playBuffer[xi + 1].samples[1] : 
+						playBuffer[xi].samples[1];
+					float crossfaded = crossfade(
+						0.5f * (playBuffer[xi].samples[0] + playBuffer[xi].samples[1]),
+						0.5f * (nextSampleL + nextSampleR),
+						xf);
+					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
+					outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
+				}
 			}
 		}
 
@@ -284,15 +312,24 @@ struct OUAIVEDisplay : OpaqueWidget {
 
 	void drawLayer(const DrawArgs& args, int layer) override {
 		if (layer == 1) {
-			if (module && (module->playBuffer.size()>0)) {
+			if (module && module->playBuffer.size() > 0) {
 				module->mylock.lock();
 				std::vector<float> vL;
 				std::vector<float> vR;
-				for (int i=0;i<module->totalSampleCount;i++) {
+				vL.reserve(module->totalSampleCount); // Pre-allocate memory
+				vR.reserve(module->totalSampleCount);
+				
+				const size_t bufferSize = module->playBuffer.size();
+				for (int i = 0; i < module->totalSampleCount && i < bufferSize; i++) {
 					vL.push_back(module->playBuffer[i].samples[0]);
-					vR.push_back(module->playBuffer[i].samples[1]);
+					if (module->channels > 1) {
+						vR.push_back(module->playBuffer[i].samples[1]);
+					} else {
+						vR.push_back(module->playBuffer[i].samples[0]); // Copy mono to both channels
+					}
 				}
 				module->mylock.unlock();
+				
 				size_t nbSample = vL.size();
 
 				nvgFontSize(args.vg, 14);

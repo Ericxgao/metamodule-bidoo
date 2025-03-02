@@ -57,6 +57,7 @@ target_sources(Bidoo PRIVATE
     ${SRC_DIR}/BAR.cpp
     ${SRC_DIR}/BISTROT.cpp
     ${SRC_DIR}/BORDL.cpp
+    ${SRC_DIR}/CANARD.cpp
     ${SRC_DIR}/CHUTE.cpp
     ${SRC_DIR}/DIKTAT.cpp
     ${SRC_DIR}/DILEMO.cpp

@@ -1,21 +1,19 @@
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
+#include "osdialog.h"
 #include <vector>
-#include <cmath>
+#include "cmath"
 #include <iomanip>
 // #include <sstream>
 #include <algorithm>
-#include <mutex>
+#include <atomic>
 #include "dep/waves.hpp"
 
 #if defined(METAMODULE)
 #include "async_filebrowser.hh"
-#else
-#include "osdialog.h"
 #endif
 
-using namespace rack;
 using namespace std;
 
 struct CANARD : BidooModule {
@@ -89,7 +87,7 @@ struct CANARD : BidooModule {
 	dsp::SchmittTrigger recordTrigger;
 	dsp::SchmittTrigger clearTrigger;
 	dsp::PulseGenerator eocPulse;
-	std::mutex mylock;
+	std::atomic<bool> locked{false};
 	bool newStop = false;
 	bool first=true;
 
@@ -110,13 +108,6 @@ struct CANARD : BidooModule {
 		recordBuffer.resize(0);
 	}
 
-	~CANARD() {
-		std::lock_guard<std::mutex> lock(mylock);
-		playBuffer.clear();
-		recordBuffer.clear();
-		slices.clear();
-	}
-
 	void process(const ProcessArgs &args) override;
 
 	void calcLoop();
@@ -124,6 +115,17 @@ struct CANARD : BidooModule {
 	void loadSample();
 	void saveSample();
 	void calcTransients();
+
+	void lock() {
+		bool expected = false;
+		while (!locked.compare_exchange_strong(expected, true)) {
+			expected = false;
+		}
+	}
+
+	void unlock() {
+		locked.store(false);
+	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = BidooModule::dataToJson();
@@ -200,50 +202,45 @@ void CANARD::calcTransients() {
 }
 
 void CANARD::loadSample() {
-	std::lock_guard<std::mutex> lock(mylock);
-	
-	if (!APP) return;
-	
 	APP->engine->yieldWorkers();
-	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), 
-								   waveFileName, waveExtension, 
-								   channels, sampleRate, totalSampleCount);
+	
+	// Get extension and validate
+	std::string ext = rack::system::getExtension(lastPath);
+	std::string upperExt = rack::string::uppercase(ext);
+	if (upperExt != ".WAV" && upperExt != ".AIFF") {
+		// Invalid format - don't try to load
+		lastPath = "";
+		waveFileName = "";
+		waveExtension = "";
+		loading = false;
+		return;
+	}
+	
+	lock();
+	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
+	unlock();
 	slices.clear();
 	loading = false;
 }
 
 void CANARD::saveSample() {
-	std::lock_guard<std::mutex> lock(mylock);
-	
-	if (!APP) return;
-	
 	APP->engine->yieldWorkers();
+	lock();
 	waves::saveWave(playBuffer, APP->engine->getSampleRate(), lastPath);
+	unlock();
 	save = false;
 }
 
 void CANARD::calcLoop() {
-	if (slices.empty()) return;
-	
 	prevPlayedSlice = index;
 	index = 0;
-	int sliceStart = 0;
+	int sliceStart = 0;;
 	int sliceEnd = totalSampleCount > 0 ? totalSampleCount - 1 : 0;
-
-	if (params[MODE_PARAM].getValue() == 1 && !slices.empty()) {
-		index = std::clamp(
-			(size_t)round(rescale(
-				clamp(params[SLICE_PARAM].getValue() + inputs[SLICE_INPUT].getVoltage(), 0.0f, 10.0f),
-				0.0f, 10.0f, 0.0f, slices.size()-1
-			)),
-			(size_t)0,
-			slices.size()-1
-		);
-		
+	if ((params[MODE_PARAM].getValue() == 1) && (slices.size()>0))
+	{
+		index = round(clamp(params[SLICE_PARAM].getValue() + inputs[SLICE_INPUT].getVoltage(), 0.0f,10.0f)*(slices.size()-1)/10);
 		sliceStart = slices[index];
-		sliceEnd = (index < (slices.size() - 1)) ? 
-				   (slices[index+1] - 1) : 
-				   (totalSampleCount - 1);
+		sliceEnd = (index < (slices.size() - 1)) ? (slices[index+1] - 1) : (totalSampleCount - 1);
 	}
 
 	if (totalSampleCount > 0) {
@@ -282,11 +279,11 @@ void CANARD::process(const ProcessArgs &args) {
 
 	if (clearTrigger.process(inputs[CLEAR_INPUT].getVoltage() + params[CLEAR_PARAM].getValue()))
 	{
-		mylock.lock();
+		lock();
 		playBuffer.clear();
 		totalSampleCount = 0;
 		slices.clear();
-		mylock.unlock();
+		unlock();
 		lastPath = "";
 		waveFileName = "";
 		waveExtension = "";
@@ -296,15 +293,15 @@ void CANARD::process(const ProcessArgs &args) {
 		int nbSample=0;
 		if ((size_t)selected<(slices.size()-1)) {
 			nbSample = slices[selected + 1] - slices[selected] - 1;
-			mylock.lock();
+			lock();
 			playBuffer.erase(playBuffer.begin() + slices[selected], playBuffer.begin() + slices[selected + 1]-1);
-			mylock.unlock();
+			unlock();
 		}
 		else {
 			nbSample = totalSampleCount - slices[selected];
-			mylock.lock();
+			lock();
 			playBuffer.erase(playBuffer.begin() + slices[selected], playBuffer.end());
-			mylock.unlock();
+			unlock();
 		}
 		slices.erase(slices.begin()+selected);
 		totalSampleCount = playBuffer.size();
@@ -324,9 +321,9 @@ void CANARD::process(const ProcessArgs &args) {
 		}
 		else {
 			auto it = std::upper_bound(slices.begin(), slices.end(), addSliceMarker);
-			mylock.lock();
+			lock();
 			slices.insert(it, addSliceMarker);
-			mylock.unlock();
+			unlock();
 			addSliceMarker = -1;
 			addSliceMarkerFlag = false;
 			calcLoop();
@@ -335,9 +332,9 @@ void CANARD::process(const ProcessArgs &args) {
 
 	if ((deleteSliceMarker>=0) && (deleteSliceMarkerFlag)) {
 		if (std::find(slices.begin(), slices.end(), deleteSliceMarker) != slices.end()) {
-			mylock.lock();
+			lock();
 			slices.erase(std::find(slices.begin(), slices.end(), deleteSliceMarker));
-			mylock.unlock();
+			unlock();
 			deleteSliceMarker = -1;
 			deleteSliceMarkerFlag = false;
 			calcLoop();
@@ -348,7 +345,7 @@ void CANARD::process(const ProcessArgs &args) {
 	{
 		if(record) {
 			if (floor(params[MODE_PARAM].getValue()) == 0) {
-				mylock.lock();
+				lock();
 				slices.clear();
 				slices.push_back(0);
 				playBuffer.resize(0);
@@ -357,21 +354,21 @@ void CANARD::process(const ProcessArgs &args) {
 					playBuffer.push_back(frame);
 				}
 				totalSampleCount = playBuffer.size();
-				mylock.unlock();
+				unlock();
 				lastPath = "";
 				waveFileName = "";
 				waveExtension = "";
 			}
 			else {
-				mylock.lock();
+				lock();
 				slices.push_back(totalSampleCount > 0 ? (totalSampleCount-1) : 0);
 				playBuffer.insert(playBuffer.end(), recordBuffer.begin(), recordBuffer.end());
 				totalSampleCount = playBuffer.size();
-				mylock.unlock();
+				unlock();
 			}
-			mylock.lock();
+			lock();
 			recordBuffer.resize(0);
-			mylock.unlock();
+			unlock();
 			lights[REC_LIGHT].setBrightness(0.0f);
 		}
 		record = !record;
@@ -379,12 +376,12 @@ void CANARD::process(const ProcessArgs &args) {
 
 	if (record) {
 		lights[REC_LIGHT].setBrightness(10.0f);
-		mylock.lock();
+		lock();
 		dsp::Frame<2> frame;
 		frame.samples[0] = inputs[INL_INPUT].getVoltage()/10.0f;
 		frame.samples[1] = inputs[INR_INPUT].getVoltage()/10.0f;
 		recordBuffer.push_back(frame);
-		mylock.unlock();
+		unlock();
 	}
 
 	int trigMode = inputs[TRIG_INPUT].isConnected() ? 1 : (inputs[GATE_INPUT].isConnected() ? 2 : 0);
@@ -436,13 +433,13 @@ void CANARD::process(const ProcessArgs &args) {
 	{
 		if (inputs[GATE_INPUT].getVoltage()>0)
 		{
+			play = true;
 			if (inputs[SLICE_INPUT].isConnected()) {
 				play = true;
 				samplePos= sampleStart + rescale(clamp(params[SLICE_PARAM].getValue() + inputs[SLICE_INPUT].getVoltage(), 0.0f,10.0f),0.0f,10.0f,0.0f,1.0f) * loopLength;
 			}
 			else if (prevGateState == 0.0f) {
 				initPos();
-				play = true;
 			}
 			else {
 				if ((readMode == 0) && (speed>=0) && (samplePos == (sampleStart+loopLength))) {
@@ -496,20 +493,12 @@ void CANARD::process(const ProcessArgs &args) {
 			else
 				fadeCoeff = 1.0f;
 
-			int xi = std::clamp((int)samplePos, 0, (int)playBuffer.size()-1);
-			int nextXi = std::min(xi + 1, (int)playBuffer.size()-1);
-			
+			int xi = samplePos;
 			float xf = samplePos - xi;
-			
-			if (xi < (int)playBuffer.size() && nextXi < (int)playBuffer.size()) {
-				float crossfaded = crossfade(playBuffer[xi].samples[0], 
-										   playBuffer[nextXi].samples[0], xf);
-				outputs[OUTL_OUTPUT].setVoltage(crossfaded * fadeCoeff * 5.0f);
-				
-				crossfaded = crossfade(playBuffer[xi].samples[1], 
-									 playBuffer[nextXi].samples[1], xf);
-				outputs[OUTR_OUTPUT].setVoltage(crossfaded * fadeCoeff * 5.0f);
-			}
+			float crossfaded = crossfade(playBuffer[xi].samples[0], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[0], xf);
+			outputs[OUTL_OUTPUT].setVoltage(crossfaded*fadeCoeff*5.0f);
+			crossfaded = crossfade(playBuffer[xi].samples[1], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[1], xf);
+			outputs[OUTR_OUTPUT].setVoltage(crossfaded*fadeCoeff*5.0f);
 		}
 	}
 	else {
@@ -590,7 +579,7 @@ struct CANARDDisplay : OpaqueWidget {
 	void drawLayer(const DrawArgs& args, int layer) override {
 		if (layer == 1) {
 			if (module && (module->playBuffer.size()>0)) {
-				module->mylock.lock();
+				module->lock();
 				std::vector<float> vL;
 				std::vector<float> vR;
 				for (int i=0;i<module->totalSampleCount;i++) {
@@ -598,7 +587,7 @@ struct CANARDDisplay : OpaqueWidget {
 					vR.push_back(module->playBuffer[i].samples[1]);
 				}
 				std::vector<int> s(module->slices);
-				module->mylock.unlock();
+				module->unlock();
 				size_t nbSample = vL.size();
 
 				nvgScissor(args.vg, 0, 0, width, 2*height+10);
@@ -862,6 +851,7 @@ struct CANARDWidget : BidooWidget {
 		}
 	};
 
+
 	void onPathDrop(const PathDropEvent& e) override {
 		Widget::onPathDrop(e);
 		CANARD *module = dynamic_cast<CANARD*>(this->module);
@@ -883,7 +873,7 @@ struct CANARDWidget : BidooWidget {
 				}
 			});
 			#else
-			char *path = osdialog_file(OSDIALOG_SAVE, dir.c_str(), fileName.c_str(), NULL);
+			char *path = osdialog_file(OSDIALOG_SAVE, dir.c_str(), fileName.c_str(), NULL);			
 			if (path) {
 				module->lastPath = path;
 				if (!module->save) module->save = true;

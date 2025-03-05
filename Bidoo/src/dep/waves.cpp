@@ -75,7 +75,20 @@ namespace waves {
     waveFileName = rack::system::getFilename(path);
     waveExtension = rack::system::getExtension(waveFileName);
     std::vector<rack::dsp::Frame<2>> result;
-    if (rack::string::uppercase(waveExtension) == ".WAV") {
+
+    // Convert extension to uppercase for comparison
+    std::string upperExt = rack::string::uppercase(waveExtension);
+    
+    // Check if extension is supported
+    if (upperExt != ".WAV" && upperExt != ".AIFF") {
+        // Return empty buffer for unsupported format
+        sampleChannels = 0;
+        sampleRate = 0;
+        sampleCount = 0;
+        return result;
+    }
+
+    if (upperExt == ".WAV") {
       unsigned int c;
       unsigned int sr;
       drwav_uint64 sc;
@@ -97,7 +110,7 @@ namespace waves {
         drwav_free(pSampleData, NULL);
       }
     }
-    else if (rack::string::uppercase(waveExtension) == ".AIFF") {
+    else if (upperExt == ".AIFF") {
       AudioFile<float> audioFile;
       if (audioFile.load (path.c_str()))  {
         sampleChannels = audioFile.getNumChannels();

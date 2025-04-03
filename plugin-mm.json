@@ -1,11 +1,144 @@
 {
-    "MetaModulePluginMaintainer": "Eric Gao",
-    "MetaModulePluginMaintainerEmail": "",
-    "MetaModulePluginMaintainerUrl": "",
+    "MetaModulePluginMaintainer": "oksami",
+    "MetaModulePluginMaintainerEmail": "itsoksami@gmail.com",
+    "MetaModulePluginMaintainerUrl": "https://github.com/oksami/metamodule-bidoo",
     "MetaModuleDescription": "Bidoo modules for MetaModule",
     "MetaModuleIncludedModules": [
-        "ACnE",
-        "antN",
-        "BAFIS"
+        {
+            "slug": "ACnE",
+            "name": "ACnE"
+        },
+        {
+            "slug": "antN",
+            "name": "antN"
+        },
+        {
+            "slug": "BAFIS",
+            "name": "bAFIs"
+        },
+        {
+            "slug": "BanCau",
+            "name": "BanCau"
+        },
+        {
+            "slug": "baR",
+            "name": "baR"
+        },
+        {
+            "slug": "BISTROT",
+            "name": "BISTROT"
+        },
+        {
+            "slug": "bordL",
+            "name": "bordL"
+        },
+        {
+            "slug": "cANARd",
+            "name": "cANARd"
+        },
+        {
+            "slug": "ChUTE",
+            "name": "ChUTE"
+        },
+        {
+            "slug": "dFUZE",
+            "name": "dFUZE"
+        },
+        {
+            "slug": "DIKTAT",
+            "name": "DIKTAT"
+        },
+        {
+            "slug": "DilEMO",
+            "name": "DilEMO"
+        },
+        {
+            "slug": "dTrOY",
+            "name": "dTrOY"
+        },
+        {
+            "slug": "dUKe",
+            "name": "dUKe"
+        },
+        {
+            "slug": "eDsaroS",
+            "name": "eDsaroS"
+        },
+        {
+            "slug": "ForK",
+            "name": "ForK"
+        },
+        {
+            "slug": "FREIN",
+            "name": "fREIN"
+        },
+        {
+            "slug": "HCTIP",
+            "name": "HCTIP"
+        },
+        {
+            "slug": "HUITre",
+            "name": "HUITre"
+        },
+        {
+            "slug": "lambda",
+            "name": "lambda"
+        },
+        {
+            "slug": "lATe",
+            "name": "lATe"
+        },
+        {
+            "slug": "lIMbO",
+            "name": "lIMbO"
+        },
+        {
+            "slug": "LoURdE",
+            "name": "LoURdE"
+        },
+        {
+            "slug": "mINIBar",
+            "name": "mINIBar"
+        },
+        {
+            "slug": "MS",
+            "name": "MS"
+        },
+        {
+            "slug": "OUAIve",
+            "name": "OUAIve"
+        },
+        {
+            "slug": "pErCO",
+            "name": "pErCO"
+        },
+        {
+            "slug": "rabBIT",
+            "name": "rabBIT"
+        },
+        {
+            "slug": "REI",
+            "name": "REI"
+        },
+        {
+            "slug": "SIGMA",
+            "name": "Σ multiprise :)"
+        },
+        {
+            "slug": "SPORE",
+            "name": "SPORE"
+        },
+        {
+            "slug": "TiARE",
+            "name": "TiARE"
+        },
+        {
+            "slug": "tOCAnTe",
+            "name": "tOCAnTe"
+        },
+        {
+            "slug": "ziNC",
+            "name": "ziNC"
+        }
     ]
 }

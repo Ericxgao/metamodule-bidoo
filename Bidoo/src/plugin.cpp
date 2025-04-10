@@ -30,7 +30,7 @@ void init(rack::Plugin *p) {
 	// p->addModel(modelENCORE);
 	// // p->addModel(modelENCOREExpander);
 	p->addModel(modelEDSAROS);
-	// // p->addModel(modelEMILE);
+	p->addModel(modelEMILE);
 	// p->addModel(modelFLAME);
 	p->addModel(modelFORK);
 	p->addModel(modelFREIN);
@@ -41,16 +41,16 @@ void init(rack::Plugin *p) {
 	p->addModel(modelLIMBO);
 	// // p->addModel(modelLIMONADE);
 	p->addModel(modelLOURDE);
-	// // p->addModel(modelMAGMA);
+	p->addModel(modelMAGMA);
 	p->addModel(modelMINIBAR);
 	// p->addModel(modelMOIRE);
 	p->addModel(modelMS);
 	// // p->addModel(modelMU);
-	// // p->addModel(modelOAI);
+	p->addModel(modelOAI);
 	p->addModel(modelOUAIVE);
 	p->addModel(modelPERCO);
 	// // p->addModel(modelPILOT);
-	// // p->addModel(modelPOUPRE);
+	p->addModel(modelPOUPRE);
 	p->addModel(modelRABBIT);
 	// p->addModel(modelRATEAU);
 	p->addModel(modelREI);

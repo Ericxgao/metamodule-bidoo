@@ -1763,7 +1763,9 @@ void extractZlibInfo(std::vector<ZlibBlockInfo>& zlibinfo, const std::vector<uns
   ExtractPNG decoder(&zlibinfo);
   decoder.decode(&in[0], in.size());
 
+#ifndef METAMODULE
   if(decoder.error) std::cout << "extract error: " << decoder.error << std::endl;
+#endif
 }
 
 } // namespace lodepng

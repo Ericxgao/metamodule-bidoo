@@ -2,7 +2,11 @@
 #include "BidooComponents.hpp"
 #include "dsp/digital.hpp"
 #include <iomanip>
+#ifndef METAMODULE
 #include "osdialog.h"
+#else
+#include "async_filebrowser.hh"
+#endif
 #include "dep/waves.hpp"
 #include <mutex>
 
@@ -287,6 +291,8 @@ void OAI::loadSample() {
 	channels[currentChannel].playBuffer = waves::getMonoWav(channels[currentChannel].lastPath, APP->engine->getSampleRate(), channels[currentChannel].waveFileName, channels[currentChannel].waveExtension,
 	 channels[currentChannel].sampleChannels, channels[currentChannel].sampleRate, channels[currentChannel].totalSampleCount);
 	loading = false;
+
+	vector<dsp::Frame<1>>(channels[currentChannel].playBuffer).swap(channels[currentChannel].playBuffer);
 }
 
 void OAI::process(const ProcessArgs &args) {
@@ -441,7 +447,8 @@ struct OAIWidget : BidooWidget {
   	OAI *module;
   	void onAction(const event::Action &e) override {
   		std::string dir = module->channels[module->currentChannel].lastPath.empty() ? asset::user("") : rack::system::getDirectory(module->channels[module->currentChannel].lastPath);
-  		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
+		#ifndef METAMODULE
+		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
   		if (path) {
 				module->mylock.lock();
 				module->channels[module->currentChannel].lastPath = path;
@@ -449,6 +456,17 @@ struct OAIWidget : BidooWidget {
 				module->mylock.unlock();
   			free(path);
   		}
+		#else
+		async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
+			if (path) {
+				module->mylock.lock();
+				module->channels[module->currentChannel].lastPath = path;
+				module->loading=true;
+				module->mylock.unlock();
+				free(path);
+			}
+		});
+		#endif
   	}
   };
 

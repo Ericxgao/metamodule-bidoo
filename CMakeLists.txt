@@ -86,6 +86,10 @@ target_sources(Bidoo PRIVATE
     ${SRC_DIR}/TIARE.cpp
     ${SRC_DIR}/TOCANTE.cpp
     ${SRC_DIR}/ZINC.cpp
+    ${SRC_DIR}/EMILE.cpp
+    ${SRC_DIR}/MAGMA.cpp
+    ${SRC_DIR}/OAI.cpp
+    ${SRC_DIR}/POUPRE.cpp
     # Add dependency files as needed
     ${DEP_DIR}/waves.cpp
     # ${DEP_DIR}/filters/*.cpp
@@ -99,6 +103,8 @@ target_sources(Bidoo PRIVATE
     ${DEP_DIR}/resampler/Downsampler2Flt.cpp
     ${DEP_DIR}/resampler/InterpPack.cpp
     ${DEP_DIR}/resampler/MipMapFlt.cpp
+    ${DEP_DIR}/lodepng/lodepng_util.cpp
+    ${DEP_DIR}/lodepng/lodepng.cpp
 )
 
 # Add include directories

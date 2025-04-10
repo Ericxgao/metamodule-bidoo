@@ -97,6 +97,7 @@ namespace waves {
       if (pSampleData != NULL)  {
         sampleChannels = c;
         sampleRate = sr;
+        sc = 2 * sc;
         for (long long unsigned int i=0; i < sc; i = i + c) {
           rack::dsp::Frame<2> frame;
           frame.samples[0] = pSampleData[i];

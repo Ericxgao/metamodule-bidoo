@@ -129,6 +129,8 @@ void OUAIVE::loadSample() {
 		waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
 	mylock.unlock();
 	loading = false;
+
+	vector<dsp::Frame<2>>(playBuffer).swap(playBuffer);
 }
 
 void OUAIVE::process(const ProcessArgs &args) {

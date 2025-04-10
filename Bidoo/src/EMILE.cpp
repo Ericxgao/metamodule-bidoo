@@ -1,7 +1,11 @@
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
+#ifndef METAMODULE
 #include "osdialog.h"
+#else
+#include "async_filebrowser.hh"
+#endif
 #include <vector>
 #include "dep/lodepng/lodepng.h"
 
@@ -153,7 +157,9 @@ void EMILE::loadSample(std::string path) {
 	unsigned error = lodepng::decode(image, width, height, path, LCT_RGBA, 16);
 	if(error != 0)
   {
+    #ifndef METAMODULE
     std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
+    #endif
 		lastPath = "";
 	}
   else {
@@ -161,6 +167,8 @@ void EMILE::loadSample(std::string path) {
     samplePos = 0;
   }
 	loading = false;
+
+  vector<unsigned char>(image).swap(image);
 }
 
 void EMILE::process(const ProcessArgs &args) {
@@ -350,11 +358,20 @@ struct EMILEWidget : BidooWidget {
   	EMILE *module;
   	void onAction(const event::Action &e) override {
   		std::string dir = module->lastPath.empty() ?  asset::user("") : rack::system::getDirectory(module->lastPath);
+#ifndef METAMODULE
   		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
   		if (path) {
   			module->loadSample(path);
   			free(path);
   		}
+#else
+      async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
+        if (path) {
+          module->loadSample(path);
+          free(path);
+        }
+      });
+#endif
   	}
   };
 

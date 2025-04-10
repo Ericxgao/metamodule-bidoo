@@ -2,7 +2,11 @@
 #include "BidooComponents.hpp"
 #include "dsp/digital.hpp"
 #include <iomanip>
+#ifndef METAMODULE
 #include "osdialog.h"
+#else
+#include "async_filebrowser.hh"
+#endif
 #include "dep/waves.hpp"
 #include <mutex>
 
@@ -265,6 +269,8 @@ void MAGMA::loadSample() {
 	APP->engine->yieldWorkers();
 	playBuffer = waves::getMonoWav(lastPath, APP->engine->getSampleRate(), waveFileName, waveExtension, sampleChannels, sampleRate, totalSampleCount);
 	loading = false;
+
+	vector<dsp::Frame<1>>(playBuffer).swap(playBuffer);
 }
 
 void MAGMA::process(const ProcessArgs &args) {
@@ -486,6 +492,7 @@ struct MAGMAWidget : BidooWidget {
   	MAGMA *module;
   	void onAction(const event::Action &e) override {
   		std::string dir = module->lastPath.empty() ? asset::user("") : rack::system::getDirectory(module->lastPath);
+		#ifndef METAMODULE
   		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
   		if (path) {
 				module->mylock.lock();
@@ -494,6 +501,17 @@ struct MAGMAWidget : BidooWidget {
 				module->mylock.unlock();
   			free(path);
   		}
+		#else
+		async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
+			if (path) {
+				module->mylock.lock();
+				module->lastPath = path;
+				module->loading = true;
+				module->mylock.unlock();
+				free(path);
+			}
+		});
+		#endif
   	}
   };
 

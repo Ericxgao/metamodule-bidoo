@@ -346,6 +346,8 @@ void EDSAROS::loadSample() {
 
 	mylock.unlock();
 	loading = false;
+
+	vector<dsp::Frame<1>>(loadingBuffer).swap(loadingBuffer);
 }
 
 void EDSAROS::process(const ProcessArgs &args) {

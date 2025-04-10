@@ -1,7 +1,9 @@
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
+#ifndef METAMODULE
 #include "osdialog.h"
+#endif
 #include <vector>
 #include "cmath"
 #include <iomanip>
@@ -12,6 +14,7 @@
 
 #if defined(METAMODULE)
 #include "async_filebrowser.hh"
+#include "CoreModules/async_thread.hh"
 #endif
 
 using namespace std;
@@ -91,6 +94,16 @@ struct CANARD : BidooModule {
 	bool newStop = false;
 	bool first=true;
 
+#if defined(METAMODULE)
+	MetaModule::AsyncThread loadSampleAsync{this, [this]() {
+		this->loadSampleInternal();
+	}};
+	
+	MetaModule::AsyncThread saveSampleAsync{this, [this]() {
+		this->saveSampleInternal();
+	}};
+#endif
+
 	CANARD() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(RECORD_PARAM, 0.0f, 1.0f, 0.0f);
@@ -114,6 +127,8 @@ struct CANARD : BidooModule {
 	void initPos();
 	void loadSample();
 	void saveSample();
+	void loadSampleInternal();
+	void saveSampleInternal();
 	void calcTransients();
 
 	void lock() {
@@ -201,7 +216,7 @@ void CANARD::calcTransients() {
 	}
 }
 
-void CANARD::loadSample() {
+void CANARD::loadSampleInternal() {
 	APP->engine->yieldWorkers();
 	
 	// Get extension and validate
@@ -221,14 +236,32 @@ void CANARD::loadSample() {
 	unlock();
 	slices.clear();
 	loading = false;
+
+	vector<dsp::Frame<2>>(playBuffer).swap(playBuffer);
 }
 
-void CANARD::saveSample() {
+void CANARD::loadSample() {
+#if defined(METAMODULE)
+	loadSampleAsync.run_once();
+#else
+	loadSampleInternal();
+#endif
+}
+
+void CANARD::saveSampleInternal() {
 	APP->engine->yieldWorkers();
 	lock();
 	waves::saveWave(playBuffer, APP->engine->getSampleRate(), lastPath);
 	unlock();
 	save = false;
+}
+
+void CANARD::saveSample() {
+#if defined(METAMODULE)
+	saveSampleAsync.run_once();
+#else
+	saveSampleInternal();
+#endif
 }
 
 void CANARD::calcLoop() {

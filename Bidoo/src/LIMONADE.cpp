@@ -4,7 +4,11 @@
 #include <thread>
 #include "dsp/resampler.hpp"
 #include "dsp/fir.hpp"
+#ifndef METAMODULE
 #include "osdialog.h"
+#else
+#include "async_filebrowser.hh"
+#endif
 #include "dep/dr_wav/dr_wav.h"
 #include "dep/osc/wtOsc.h"
 #include "../pffft/pffft.h"
@@ -84,7 +88,9 @@ void tSaveWaveTableAsPng(wtTable &table, int sampleRate, std::string path) {
 	unsigned error = lodepng::encode(path, image, width, height);
 	if(error != 0)
   {
+    #ifndef METAMODULE
     std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
+    #endif
 	}
 }
 
@@ -208,7 +214,9 @@ void tLoadPNG(wtTable &table, std::string path) {
 	unsigned error = lodepng::decode(image, width, height, path, LCT_RGB);
 	if(error != 0)
   {
+    #ifndef METAMODULE
     std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
+    #endif
 	}
   else {
 		sc = width*height;
@@ -591,6 +599,7 @@ void LIMONADE::resetWaveTable() {
 
 void LIMONADE::loadSample() {
 	osdialog_filters* filters = osdialog_filters_parse(WAV_FILTERS);
+	#ifndef METAMODULE
 	char *path = osdialog_file(OSDIALOG_OPEN, "", NULL, filters);
 	if (path) {
 		lastPath=path;
@@ -598,6 +607,16 @@ void LIMONADE::loadSample() {
 		free(path);
 		morphType = -1;
 	}
+	#else
+	async_osdialog_file(OSDIALOG_OPEN, "", NULL, NULL, [this](char *path) {
+		if (path) {
+			lastPath=path;
+			tLoadSample(table, path, frameSize, true);
+			free(path);
+			morphType = -1;
+		}
+	});
+	#endif
 	osdialog_filters_free(filters);
 }
 

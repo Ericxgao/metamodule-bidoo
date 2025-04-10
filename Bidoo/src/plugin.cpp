@@ -25,7 +25,7 @@ void init(rack::Plugin *p) {
 	p->addModel(modelDFUZE);
 	p->addModel(modelDIKTAT);
 	p->addModel(modelDILEMO);
-	p->addModel(modelDTROY);
+	// p->addModel(modelDTROY);
 	p->addModel(modelDUKE);
 	// p->addModel(modelENCORE);
 	// // p->addModel(modelENCOREExpander);

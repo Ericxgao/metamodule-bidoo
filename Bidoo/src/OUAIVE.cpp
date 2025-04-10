@@ -81,12 +81,12 @@ struct OUAIVE : BidooModule {
 
 	OUAIVE() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(TRIG_MODE_PARAM, 0.0, 2.0, 0.0);
-		configParam(OUAIVE::READ_MODE_PARAM, 0.0, 2.0, 0.0);
-		configParam(NB_SLICES_PARAM, 1.0, 128.01, 1.0);
-		configParam(CVSLICES_PARAM, -1.0f, 1.0f, 0.0f);
-		configParam(SPEED_PARAM, -0.05, 10, 1.0);
-		configParam(CVSPEED_PARAM, -1.0f, 1.0f, 0.0f);
+		configParam(TRIG_MODE_PARAM, 0.0, 2.0, 0.0, "Trigger mode");
+		configParam(OUAIVE::READ_MODE_PARAM, 0.0, 2.0, 0.0, "Read mode");
+		configParam(NB_SLICES_PARAM, 1.0, 128.01, 1.0, "Number of slices");
+		configParam(CVSLICES_PARAM, -1.0f, 1.0f, 0.0f, "CV slices");
+		configParam(SPEED_PARAM, -0.05, 10, 1.0, "Speed");
+		configParam(CVSPEED_PARAM, -1.0f, 1.0f, 0.0f, "CV speed");
 
 		configInput(GATE_INPUT, "Gate");
 		configInput(POS_INPUT, "Position");
@@ -220,53 +220,50 @@ void OUAIVE::process(const ProcessArgs &args) {
 	}
 
 	if (play && (samplePos>=0) && (samplePos < totalSampleCount)) {
-		if (channels == 1) {
-			int xi = static_cast<int>(samplePos);
-			if (xi < playBuffer.size()) {
-				float xf = samplePos - xi;
-				lock();
+		int xi = static_cast<int>(samplePos);
+		float xf = samplePos - xi;
+        
+		if (xi < playBuffer.size()) {
+			// Acquire lock only once before processing both channels
+			lock();
+			
+			if (channels == 1) {
+				// Mono processing
 				float nextSample = (xi + 1 < playBuffer.size()) ? 
 					playBuffer[xi + 1].samples[0] : 
 					playBuffer[xi].samples[0];
 				float crossfaded = crossfade(playBuffer[xi].samples[0], nextSample, xf);
+				
+				// Set both outputs with the same value
+				float outputVoltage = 5.0f * crossfaded;
 				unlock();
-				outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
-				outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
+				outputs[OUTL_OUTPUT].setVoltage(outputVoltage);
+				outputs[OUTR_OUTPUT].setVoltage(outputVoltage);
 			}
-		}
-		else if (channels == 2) {
-			int xi = static_cast<int>(samplePos);
-			if (xi < playBuffer.size()) {
-				float xf = samplePos - xi;
+			else if (channels == 2) {
+				// Stereo processing
+				// Get sample data for both channels while holding the lock only once
+				float sample0L = playBuffer[xi].samples[0];
+				float sample0R = playBuffer[xi].samples[1];
+				
+				float sample1L = (xi + 1 < playBuffer.size()) ? playBuffer[xi + 1].samples[0] : sample0L;
+				float sample1R = (xi + 1 < playBuffer.size()) ? playBuffer[xi + 1].samples[1] : sample0R;
+				unlock();
+				
 				if (outputs[OUTL_OUTPUT].isConnected() && outputs[OUTR_OUTPUT].isConnected()) {
-					lock();
-					float nextSampleL = (xi + 1 < playBuffer.size()) ? 
-						playBuffer[xi + 1].samples[0] : 
-						playBuffer[xi].samples[0];
-					float crossfadedL = crossfade(playBuffer[xi].samples[0], nextSampleL, xf);
-					
-					float nextSampleR = (xi + 1 < playBuffer.size()) ? 
-						playBuffer[xi + 1].samples[1] : 
-						playBuffer[xi].samples[1];
-					float crossfadedR = crossfade(playBuffer[xi].samples[1], nextSampleR, xf);
-					unlock();
+					// Both outputs connected - process as stereo
+					float crossfadedL = crossfade(sample0L, sample1L, xf);
+					float crossfadedR = crossfade(sample0R, sample1R, xf);
 					
 					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfadedL);
 					outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfadedR);
 				}
 				else {
-					lock();
-					float nextSampleL = (xi + 1 < playBuffer.size()) ? 
-						playBuffer[xi + 1].samples[0] : 
-						playBuffer[xi].samples[0];
-					float nextSampleR = (xi + 1 < playBuffer.size()) ? 
-						playBuffer[xi + 1].samples[1] : 
-						playBuffer[xi].samples[1];
+					// Mix down to mono
 					float crossfaded = crossfade(
-						0.5f * (playBuffer[xi].samples[0] + playBuffer[xi].samples[1]),
-						0.5f * (nextSampleL + nextSampleR),
+						0.5f * (sample0L + sample0R),
+						0.5f * (sample1L + sample1R),
 						xf);
-					unlock();
 					
 					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
 					outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
@@ -362,25 +359,23 @@ struct OUAIVEDisplay : OpaqueWidget {
 	void drawLayer(const DrawArgs& args, int layer) override {
 		if (layer == 1) {
 			if (module && module->playBuffer.size() > 0) {
+				// Copy buffer outside of lock to minimize lock time
 				module->lock();
-				std::vector<float> vL;
-				std::vector<float> vR;
-				vL.reserve(module->totalSampleCount); // Pre-allocate memory
-				vR.reserve(module->totalSampleCount);
+				size_t bufferSize = std::min(size_t(module->totalSampleCount), module->playBuffer.size());
+				std::vector<float> vL(bufferSize);
+				std::vector<float> vR(bufferSize);
 				
-				const size_t bufferSize = module->playBuffer.size();
-				for (int i = 0; i < module->totalSampleCount && i < bufferSize; i++) {
-					vL.push_back(module->playBuffer[i].samples[0]);
+				// Batch copy the data while holding the lock
+				for (size_t i = 0; i < bufferSize; i++) {
+					vL[i] = module->playBuffer[i].samples[0];
 					if (module->channels > 1) {
-						vR.push_back(module->playBuffer[i].samples[1]);
+						vR[i] = module->playBuffer[i].samples[1];
 					} else {
-						vR.push_back(module->playBuffer[i].samples[0]); // Copy mono to both channels
+						vR[i] = module->playBuffer[i].samples[0]; // Copy mono to both channels
 					}
 				}
 				module->unlock();
 				
-				size_t nbSample = vL.size();
-
 				nvgFontSize(args.vg, 14);
 				nvgFillColor(args.vg, YELLOW_BIDOO);
 
@@ -402,31 +397,30 @@ struct OUAIVEDisplay : OpaqueWidget {
 
 				std::string readMode = "";
 				if (module->readMode == 0) {
-					readMode = "►";
+					readMode = ">";
 				}
 				else if (module->readMode == 2) {
-					readMode = "►►";
+					readMode = ">>";
 				}
 				else {
-					readMode = "◄";
+					readMode = "<";
 				}
 
 				nvgTextBox(args.vg, 40, -15, 40, readMode.c_str(), NULL);
 
-				char speedStr[16];
-				std::string speed = speedStr;
+				std::string speed = std::to_string(module->speed);
 
 				nvgTextBox(args.vg, 90, -15, 40, speed.c_str(), NULL);
 
 				//Draw play line
-				if ((module->play) && (nbSample>0)) {
+				if ((module->play) && (bufferSize>0)) {
 					nvgStrokeColor(args.vg, LIGHTBLUE_BIDOO);
 					{
 						nvgBeginPath(args.vg);
 						nvgStrokeWidth(args.vg, 2);
 						if (module->totalSampleCount>0) {
-							nvgMoveTo(args.vg, module->samplePos * zoomWidth / nbSample + zoomLeftAnchor, 0);
-							nvgLineTo(args.vg, module->samplePos * zoomWidth / nbSample + zoomLeftAnchor, 2 * height+10);
+							nvgMoveTo(args.vg, module->samplePos * zoomWidth / bufferSize + zoomLeftAnchor, 0);
+							nvgLineTo(args.vg, module->samplePos * zoomWidth / bufferSize + zoomLeftAnchor, 2 * height+10);
 						}
 						else {
 							nvgMoveTo(args.vg, 0, 0);
@@ -458,17 +452,17 @@ struct OUAIVEDisplay : OpaqueWidget {
 				}
 				nvgStroke(args.vg);
 
-				if ((!module->loading) && (nbSample>0)) {
+				if ((!module->loading) && (bufferSize>0)) {
 					//Draw waveform
 					nvgStrokeColor(args.vg, PINK_BIDOO);
 					nvgSave(args.vg);
 					Rect b = Rect(Vec(zoomLeftAnchor, 0), Vec(zoomWidth, height));
-					size_t inc = std::max(vL.size()/zoomWidth/4,1.f);
+					size_t inc = std::max(bufferSize/zoomWidth/4,1.f);
 					nvgScissor(args.vg, 0, b.pos.y, width, height);
 					nvgBeginPath(args.vg);
-					for (size_t i = 0; i < vL.size(); i+=inc) {
+					for (size_t i = 0; i < bufferSize; i+=inc) {
 						float x, y;
-						x = (float)i/vL.size();
+						x = (float)i/bufferSize;
 						y = (-1.f)*vL[i] / 2.0f + 0.5f;
 						Vec p;
 						p.x = b.pos.x + b.size.x * x;
@@ -488,9 +482,9 @@ struct OUAIVEDisplay : OpaqueWidget {
 					b = Rect(Vec(zoomLeftAnchor, height+10), Vec(zoomWidth, height));
 					nvgScissor(args.vg, 0, b.pos.y, width, height);
 					nvgBeginPath(args.vg);
-					for (size_t i = 0; i < vR.size(); i+=inc) {
+					for (size_t i = 0; i < bufferSize; i+=inc) {
 						float x, y;
-						x = (float)i/vR.size();
+						x = (float)i/bufferSize;
 						y = (-1.f)*vR[i] / 2.0f + 0.5f;
 						Vec p;
 						p.x = b.pos.x + b.size.x * x;
@@ -515,8 +509,8 @@ struct OUAIVEDisplay : OpaqueWidget {
 							nvgStrokeWidth(args.vg, 1);
 							{
 								nvgBeginPath(args.vg);
-								nvgMoveTo(args.vg, (int)(i * module->sliceLength * zoomWidth / nbSample + zoomLeftAnchor) , 0);
-								nvgLineTo(args.vg, (int)(i * module->sliceLength * zoomWidth / nbSample + zoomLeftAnchor) , 2*height+10);
+								nvgMoveTo(args.vg, (int)(i * module->sliceLength * zoomWidth / bufferSize + zoomLeftAnchor) , 0);
+								nvgLineTo(args.vg, (int)(i * module->sliceLength * zoomWidth / bufferSize + zoomLeftAnchor) , 2*height+10);
 								nvgClosePath(args.vg);
 							}
 							nvgStroke(args.vg);

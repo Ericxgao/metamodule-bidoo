@@ -115,6 +115,11 @@ struct Pattern {
 					std::vector<Step> tmp (steps.size());
 				  auto it = std::copy_if (steps.begin(), steps.end(), tmp.begin(), [](Step i){return !(i.skip);} );
 				  tmp.resize(std::distance(tmp.begin(),it));  // shrink container to new size
+					if (tmp.empty()) {
+						// Handle the case where all steps are skipped
+						currentPulse = 0;
+						return std::make_tuple(0, 0);
+					}
 					Step tmpStep = *select_randomly(tmp.begin(), tmp.end());
 					currentPulse = 0;
 					currentStep = tmpStep.number;
@@ -125,6 +130,11 @@ struct Pattern {
 					vector<Step> subPattern;
 					subPattern.push_back(steps[prev]);
 					subPattern.push_back(steps[next]);
+					if (subPattern.empty()) {
+						// This shouldn't happen as we've added items, but added for robustness
+						currentPulse = 0;
+						return std::make_tuple(0, 0);
+					}
 					Step choice = *select_randomly(subPattern.begin(), subPattern.end());
 					currentPulse = 0;
 					currentStep = choice.number;
@@ -147,6 +157,8 @@ struct Pattern {
 					return i;
 				}
 			}
+			// If all steps are skipped, force use of the first step anyway
+			steps[0].skip = false;
 			return 0;
 	}
 
@@ -157,6 +169,8 @@ struct Pattern {
 					return i;
 				}
 			}
+			// If all steps are skipped, force use of the last step anyway
+			steps[15].skip = false;
 			return 15;
 	}
 
@@ -168,6 +182,8 @@ struct Pattern {
 					return j;
 				}
 			}
+			// If all other steps are skipped, make sure the current position isn't skipped
+			steps[pos].skip = false;
 			return pos;
 	}
 
@@ -179,6 +195,8 @@ struct Pattern {
 					return j + (i<0?16:0);
 				}
 			}
+			// If all other steps are skipped, make sure the current position isn't skipped
+			steps[pos].skip = false;
 			return pos;
 	}
 
@@ -845,11 +863,11 @@ struct DTROYDisplay : TransparentWidget {
 
 	std::string displayPlayMode(int value) {
 		switch(value){
-			case 0: return "►";
-			case 1: return "◄";
-			case 2: return "►◄";
-			case 3: return "►*";
-			case 4: return "►?";
+			case 0: return ">";
+			case 1: return "<";
+			case 2: return "><";
+			case 3: return ">*";
+			case 4: return ">?";
 			default: return "";
 		}
 	}

@@ -800,12 +800,12 @@ struct PILOTMoveTypeDisplay : TransparentWidget {
 
 	std::string displayPlayMode() {
 		switch(*value){
-			case 0: return "►";
-			case 1: return "◄";
-			case 2: return "►◄";
-			case 3: return "►*";
-			case 4: return "►?";
-			case 5: return "Ф";
+			case 0: return ">";
+			case 1: return "<";
+			case 2: return "><";
+			case 3: return ">*";
+			case 4: return ">?";
+			case 5: return "0";
 			default: return "";
 		}
 	}

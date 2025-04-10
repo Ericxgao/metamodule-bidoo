@@ -49,8 +49,17 @@ struct RABBIT : BidooModule {
 		for (int i = 0; i < 8; i++) {
 			configParam<tpCycle>(BITOFF_PARAM + i, 0.f, 1.f, 0.f, "Bit " + std::to_string(i + 1));
 			configParam<tpCycle>(BITREV_PARAM + i, 0.f, 1.f, 0.f, "Bit " + std::to_string(i + 1) + " Reverse");
+
+			configInput(BITOFF_INPUT + i, "Bit off " + std::to_string(i + 1));
+			configInput(BITREV_INPUT + i, "Bit rev " + std::to_string(i + 1));
 		}
 
+		configInput(L_INPUT, "L");
+		configInput(R_INPUT, "R");
+
+		configOutput(L_OUTPUT, "L");
+		configOutput(R_OUTPUT, "R");
+		
 		memset(&bitOff, 0, 8 * sizeof(bool));
 		memset(&bitRev, 0, 8 * sizeof(bool));
 	}

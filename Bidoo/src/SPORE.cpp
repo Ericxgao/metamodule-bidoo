@@ -201,6 +201,14 @@ struct SPORE : BidooModule {
 
 		configParam(WINDOW_PARAM, 0, 5, 0, "Window type");
 		configParam(ATTACKRELEASE_PARAM, 0, 1, 0.5f, "A/R window");
+
+		configInput(INPUT, "In");
+		configInput(PITCH_INPUT, "Pitch");
+		configInput(GRAINSIZE_INPUT, "Grain size");
+		configInput(HOPSIZEANALYSIS_INPUT, "Analysis hopsize");
+		configInput(HOPSIZESYNTHESIS_INPUT, "Synthesis hopsize");
+
+		configOutput(OUTPUT, "Out");
 	}
 
 	~SPORE() {

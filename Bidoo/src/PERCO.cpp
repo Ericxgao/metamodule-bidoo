@@ -63,6 +63,14 @@ struct PERCO : BidooModule {
 		configParam(CUTOFF_PARAM, 0.f, 1.f, 1.f, "Center Freq.", "Hz", std::pow(2, 10.f), dsp::FREQ_C4 / std::pow(2, 5.f));
 		configParam(Q_PARAM, .1f, 1.f, .1f, "Q", "%", 0.f, 100.f);
 		configParam(CMOD_PARAM, -1.f, 1.f, 0.f, "Freq. Mod", "%", 0.f, 100.f);
+
+		configInput(IN, "In");
+		configInput(CUTOFF_INPUT, "Cutoff");
+		configInput(Q_INPUT, "Q");
+
+		configOutput(OUT_LP, "Out L");
+		configOutput(OUT_BP, "Out BP");
+		configOutput(OUT_HP, "Out HP");
 	}
 
 	void process(const ProcessArgs &args) override {

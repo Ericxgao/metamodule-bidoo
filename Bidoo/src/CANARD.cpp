@@ -117,6 +117,23 @@ struct CANARD : BidooModule {
 
 		playBuffer.resize(0);
 		recordBuffer.resize(0);
+
+		configInput(INL_INPUT, "In L");
+		configInput(INR_INPUT, "In R");
+		configInput(TRIG_INPUT, "Trigger");
+		configInput(GATE_INPUT, "Gate");
+		configInput(SAMPLE_START_INPUT, "Sample start");
+		configInput(LOOP_LENGTH_INPUT, "Loop length");
+		configInput(READ_MODE_INPUT, "Read mode");
+		configInput(SPEED_INPUT, "Speed");
+		configInput(RECORD_INPUT, "Record");
+		configInput(FADE_INPUT, "Fade");
+		configInput(SLICE_INPUT, "Slice");
+		configInput(CLEAR_INPUT, "Clear");
+
+		configOutput(OUTL_OUTPUT, "Out L");
+		configOutput(OUTR_OUTPUT, "Out R");
+		configOutput(EOC_OUTPUT, "EOC");
 	}
 
 	void process(const ProcessArgs &args) override;

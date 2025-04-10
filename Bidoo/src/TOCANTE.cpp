@@ -77,6 +77,27 @@ struct TOCANTE : BidooModule {
 		configParam(BPMFINE_PARAM, 0.f, 0.99f, 0.f, "Fine");
 		configParam(BEATS_PARAM,  1.f, 32.f, 4.f, "Beats per measure");
 		configParam(REF_PARAM, 1.f, 4.f, 2.f, "Note value");
+
+		configInput(BPM_INPUT, "BPM");
+		configInput(BPMFINE_INPUT, "BPM fine");
+		configInput(BEATS_INPUT, "Beats");
+		configInput(REF_INPUT, "Note value");
+		configInput(RUN_INPUT, "Run");
+		configInput(RESET_INPUT, "Reset");
+
+		configOutput(OUT_MEASURE, "Measure");
+		configOutput(OUT_BEAT, "Beat");
+		configOutput(OUT_TRIPLET, "Triplet");
+		configOutput(OUT_QUARTER, "Quarter");
+		configOutput(OUT_EIGHTH, "Eighth");
+		configOutput(OUT_SIXTEENTH, "Sixteenth");
+		configOutput(OUT_THIRTYSECOND, "Thirty-second");
+		configOutput(OUT_SIXTYFOURTH, "Sixty-fourth");
+		configOutput(OUT_ONEHUNDREDTWENTYEIGHTH, "One hundred twenty-eighth");
+
+		configOutput(OUT_RESET, "Reset");
+		configOutput(OUT_RUN, "Run");
+		
 	}
 
 	void process(const ProcessArgs &args) override;

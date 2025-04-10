@@ -37,6 +37,12 @@ struct LATE : BidooModule {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(SWING_PARAM, 0, 9, 0, "Swing");
 		configParam(CVCOEFF_PARAM, -1.0f, 1.0f, 0.0f, "Placeholder");
+
+		configInput(CLOCK_INPUT, "Clock");
+		configInput(RESET_INPUT, "Reset");
+		configInput(SWING_INPUT, "Swing");
+
+		configOutput(CLOCK_OUTPUT, "Clock");
 	}
 
 	void process(const ProcessArgs &args) override {

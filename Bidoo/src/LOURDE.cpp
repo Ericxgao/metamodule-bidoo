@@ -37,6 +37,16 @@ struct LOURDE : BidooModule {
     configParam(WEIGHT2, -5.0f, 5.0f, 0.0f);
     configParam(WEIGHT3, -5.0f, 5.0f, 0.0f);
     configParam(OUTFLOOR, -10.0f, 10.0f, 0.0f);
+
+		configInput(IN1, "In 1");
+		configInput(IN2, "In 2");
+		configInput(IN3, "In 3");
+		configInput(INWEIGHT1, "In weight 1");
+		configInput(INWEIGHT2, "In weight 2");
+		configInput(INWEIGHT3, "In weight 3");
+		configInput(INFLOOR, "In floor");
+
+		configOutput(OUT, "Out");
   }
 
 	void process(const ProcessArgs &args) override;

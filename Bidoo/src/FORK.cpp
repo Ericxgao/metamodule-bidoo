@@ -123,6 +123,19 @@ struct FORK : BidooModule {
     configParam(F_PARAM + 3, 3000.0f, 4700.0f, 3400.0f);
     configParam(A_PARAM + 3, 0.0f, 0.3f, 0.2f);
 
+    configInput(FORMANT_TYPE_INPUT, "Formant Type");
+    configInput(PITCH_INPUT, "1V/oct Pitch");
+    configInput(F_INPUT, "Formant 1 Frequency");
+    configInput(F_INPUT + 1, "Formant 2 Frequency");
+    configInput(F_INPUT + 2, "Formant 3 Frequency");
+    configInput(F_INPUT + 3, "Formant 4 Frequency");
+    configInput(A_INPUT, "Formant 1 Amplitude");
+    configInput(A_INPUT + 1, "Formant 2 Amplitude");
+    configInput(A_INPUT + 2, "Formant 3 Amplitude");
+    configInput(A_INPUT + 3, "Formant 4 Amplitude");
+
+    configOutput(SIGNAL_OUTPUT, "Signal");
+
 		init_formant();
 		f1=f2=f3=f4=100.0f;a1=a2=a3=a4=0.0f;
 	}

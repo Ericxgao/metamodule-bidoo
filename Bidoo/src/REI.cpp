@@ -64,6 +64,20 @@ struct REI : BidooModule {
 		configParam(SHIMMPITCH_PARAM, .5f, 4.f, 1.f, "Pitch shift", "x");
 		configParam(FREEZE_PARAM, 0.f, 1.f, 0.f, "Freeze");
 		configSwitch(CLIPPING_PARAM, 0, 1, 0, "Clipping", {"Tanh", "Digi"});
+
+		configInput(IN_L_INPUT, "In L");
+		configInput(IN_R_INPUT, "In R");
+		configInput(SIZE_INPUT, "Size");
+		configInput(DAMP_INPUT, "Damp");
+		configInput(FREEZE_INPUT, "Freeze");
+		configInput(WIDTH_INPUT, "Width");
+		configInput(SHIMM_INPUT, "Shim");
+		configInput(SHIMMPITCH_INPUT, "Shim pitch");
+		configInput(DRY_INPUT, "Dry");
+		configInput(WET_INPUT, "Wet");
+
+		configOutput(OUT_L_OUTPUT, "Out L");
+		configOutput(OUT_R_OUTPUT, "Out R");
 	}
 
 	~REI() {

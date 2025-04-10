@@ -71,6 +71,14 @@ struct BAR : BidooModule {
 		configParam(MIX_PARAM, 0.0f, 1.0f, 1.0f, "Mix");
 		configParam(LOOKAHEAD_PARAM, 0.0f, 200.0f, 0.0f, "Lookahead");
 		configParam(BYPASS_PARAM, 0.0f, 1.0f, 0.0f, "Bypass");
+
+		configInput(IN_L_INPUT, "In L");
+		configInput(IN_R_INPUT, "In R");
+		configInput(SC_L_INPUT, "SC L");
+		configInput(SC_R_INPUT, "SC R");
+
+		configOutput(OUT_L_OUTPUT, "Out L");
+		configOutput(OUT_R_OUTPUT, "Out R");
 	}
 
 	void process(const ProcessArgs &args) override;

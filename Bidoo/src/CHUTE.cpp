@@ -48,6 +48,15 @@ struct CHUTE : BidooModule {
 		configParam(GRAVITY_PARAM, 1.622f, 11.15f, 9.798f, "Gravity", " m/s²", 1.622f, 11.15f); // between the Moon and Neptune
 		configParam(COR_PARAM, 0.0f, 1.0f, 0.69f, "Coefficient of restitution", "", 0.f, 1.f);  // 0 inelastic, 1 perfect elastic, 0.69 glass
 		configParam(RUN_PARAM, 0.f, 1.f, 0.f, "Trig");
+
+		configInput(TRIG_INPUT, "Trigger");
+		configInput(ALTITUDE_INPUT, "Altitude");
+		configInput(GRAVITY_INPUT, "Gravity");
+		configInput(COR_INPUT, "Coefficient of restitution");
+
+		configOutput(GATE_OUTPUT, "Gate");
+		configOutput(PITCH_OUTPUT, "Pitch");
+		configOutput(PITCHSTEP_OUTPUT, "Pitch step");
 	}
 
 	void process(const ProcessArgs &args) override;

@@ -176,8 +176,29 @@ struct EDSAROS : BidooModule {
 		configParam(DECAYSLOPE_PARAM, 0.0f, 1.0f, 0.5f, "Decay slope");
 		configParam(RELEASESLOPE_PARAM, 0.0f, 1.0f, 0.5f, "Release slope");
 
-    configParam(GAIN_PARAM, 1.0f, 10.0f, 1.0f, "Sample gain");
-    configParam(ZEROCROSSING_PARAM, 0.0f, 1.0f, 0.0f, "Zero crossing");
+		configParam(GAIN_PARAM, 1.0f, 10.0f, 1.0f, "Sample gain");
+		configParam(ZEROCROSSING_PARAM, 0.0f, 1.0f, 0.0f, "Zero crossing");
+
+		configInput(TRIG_INPUT, "Trigger");
+		configInput(PITCH_INPUT, "Pitch");
+		configInput(SAMPLESTART_INPUT, "Sample start CV");
+		configInput(SAMPLEEND_INPUT, "Sample end CV");
+		configInput(LOOPSTART_INPUT, "Loop start CV");
+		configInput(LOOPEND_INPUT, "Loop end CV");
+		configInput(LOOPCROSSFADE_INPUT, "Loop crossfade CV");
+		configInput(RELEASESTART_INPUT, "Release start CV");
+		configInput(RELEASECROSSFADE_INPUT, "Release crossfade CV");
+		configInput(ATTACK_INPUT, "Attack CV");
+		configInput(DECAY_INPUT, "Decay CV");
+		configInput(RELEASE_INPUT, "Release CV");
+		configInput(INIT_INPUT, "Init gain CV");
+		configInput(PEAK_INPUT, "Peak gain CV");
+		configInput(SUSTAIN_INPUT, "Sustain gain CV");
+		configInput(ATTACKSLOPE_INPUT, "Attack slope CV");
+		configInput(DECAYSLOPE_INPUT, "Decay slope CV");
+		configInput(RELEASESLOPE_INPUT, "Release slope CV");
+		
+		configOutput(OUT, "Audio");
 	}
 
 	~EDSAROS() {

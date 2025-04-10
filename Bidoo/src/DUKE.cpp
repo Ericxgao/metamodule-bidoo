@@ -37,8 +37,11 @@ struct DUKE : BidooModule {
 		for (int i = 0; i < 4; i++) {
 			configParam(MAX_PARAM + i, 0.0f, 10.0f, 10.0f);
 			configParam(MIN_PARAM + i, 0.0f, 10.0f, 0.0f);
-      configParam(TYPE_PARAM + i, 0.0f, 1.0f, 0.0f);
-      configParam(SLIDER_PARAM + i, 0.0f, 10.0f, 0.0f);
+			configParam(TYPE_PARAM + i, 0.0f, 1.0f, 0.0f);
+			configParam(SLIDER_PARAM + i, 0.0f, 10.0f, 0.0f);
+
+			configInput(SLIDER_INPUT + i, "Slider " + std::to_string(i + 1));
+			configOutput(CV_OUTPUT + i, "CV " + std::to_string(i + 1));
 		}
   }
 

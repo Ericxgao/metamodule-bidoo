@@ -51,6 +51,17 @@ struct DFUZE : BidooModule {
     configParam(TAIL_PARAM, 0.0f, 10.0f, 5.0f, "Tail level");
 
 		verb = gverb_new(APP->engine->getSampleRate(), 300, 1, 1, 1, 1, 1, 1, 1);
+
+		configInput(IN_INPUT, "In");
+		configInput(SIZE_INPUT, "Size");
+		configInput(REVTIME_INPUT, "Reverb time");
+		configInput(DAMP_INPUT, "Damping");
+		configInput(BANDWIDTH_INPUT, "Bandwidth");
+		configInput(EARLYLEVEL_INPUT, "Early reflections level");
+		configInput(TAIL_INPUT, "Tail level");
+
+		configOutput(OUT_L_OUTPUT, "Out L");
+		configOutput(OUT_R_OUTPUT, "Out R");
 	}
 
 	~DFUZE() {

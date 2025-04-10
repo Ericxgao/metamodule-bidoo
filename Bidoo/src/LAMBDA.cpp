@@ -27,7 +27,19 @@ struct LAMBDA : BidooModule {
 
 	dsp::SchmittTrigger sampleTrigger;
 
-	LAMBDA() { config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS); }
+	LAMBDA() { 
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
+		configInput(CLOCK_INPUT, "Clock");
+		configInput(CV_INPUT, "CV");
+		
+		configOutput(ONE_OUTPUT, "1");
+		configOutput(TWO_OUTPUT, "2");
+		configOutput(THREE_OUTPUT, "3");
+		configOutput(FOUR_OUTPUT, "4");
+		configOutput(FIVE_OUTPUT, "5");
+		configOutput(SIX_OUTPUT, "6");
+	}
 
 	void process(const ProcessArgs &args) override {
 		if (sampleTrigger.process(inputs[CLOCK_INPUT].getVoltage())) {

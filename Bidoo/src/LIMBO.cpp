@@ -105,6 +105,15 @@ struct LIMBO : BidooModule {
 		configParam(MUG_PARAM, 0.0f, 1.0f, 0.0f, "Gain Boost", "%", 0.f, 100.f);
 		configParam(CMOD_PARAM, -1.0f, 1.0f, 0.0f, "Freq. Mod", "%", 0.f, 100.f);
 		configParam<tpOnOff>(MODE_PARAM, 0.0f, 1.0f, 0.0f, "Linear");
+
+		configInput(IN_L, "In L");
+		configInput(IN_R, "In R");
+		configInput(CUTOFF_INPUT, "Cutoff");
+		configInput(Q_INPUT, "Q");
+		configInput(MUG_INPUT, "Mug");
+
+		configOutput(OUT_L, "Out L");
+		configOutput(OUT_R, "Out R");
 	}
 
 	void process(const ProcessArgs &args) override {

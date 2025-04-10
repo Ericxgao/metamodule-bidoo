@@ -104,6 +104,16 @@ struct EMILE : BidooModule {
     configSwitch(B_PARAM, 0, 1, 0, "Blue");
     configSwitch(A_PARAM, 0, 1, 0, "Alpha");
 
+		configInput(POS_INPUT, "Position");
+		configInput(CURVE_INPUT, "Frequency curve");
+		configInput(TUNE_INPUT, "Tune");
+		configInput(R_INPUT, "Red");
+		configInput(G_INPUT, "Green");
+		configInput(B_INPUT, "Blue");
+		configInput(A_INPUT, "Alpha");
+
+		configOutput(OUT, "Out");
+
     magn = (float*) pffft_aligned_malloc(FS2*sizeof(float));
     out = (float*) pffft_aligned_malloc(STS*sizeof(float));
     acc = (float*) pffft_aligned_malloc(2*FS*sizeof(float));

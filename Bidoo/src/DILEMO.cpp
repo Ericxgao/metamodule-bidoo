@@ -44,6 +44,22 @@ struct DILEMO : BidooModule {
 	DILEMO() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(THRESHOLD_PARAM, 0.0f, 10.0f, 0.0f);
+
+		configInput(IN1_AND, "In 1 AND");
+		configInput(IN2_AND, "In 2 AND");
+		configInput(IN_NOT, "In NOT");
+		configInput(IN1_OR, "In 1 OR");
+		configInput(IN2_OR, "In 2 OR");
+		configInput(IN1_XOR, "In 1 XOR");
+		configInput(IN2_XOR, "In 2 XOR");
+
+		configOutput(AND_OUT, "AND");
+		configOutput(NAND_OUT, "NAND");
+		configOutput(OR_OUT, "OR");
+		configOutput(NOR_OUT, "NOR");
+		configOutput(XOR_OUT, "XOR");
+		configOutput(XNOR_OUT, "XNOR");
+		configOutput(NOT_OUT, "NOT");
   }
 
 	void process(const ProcessArgs &args) override;

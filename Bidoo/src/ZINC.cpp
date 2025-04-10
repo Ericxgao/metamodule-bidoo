@@ -143,6 +143,10 @@ struct ZINC : BidooModule {
 			iFilter[i] = new ZBiquad(freq[i%4] / APP->engine->getSampleRate(), {5.0f}, {6.0f});
 			cFilter[i] = new ZBiquad(freq[i%4] / APP->engine->getSampleRate(), {5.0f}, {6.0f});
 		}
+
+		configInput(IN_MOD, "Modulator");
+		configInput(IN_CARR, "Carrier");
+		configOutput(OUT, "Out");
 	}
 
 	~ZINC() override {

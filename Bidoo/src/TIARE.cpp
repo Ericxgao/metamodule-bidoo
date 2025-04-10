@@ -387,6 +387,8 @@ struct TIARE : BidooModule {
 		configInput(FM_INPUT, "Frequency modulation");
 		configInput(SYNC_INPUT, "Sync");
 		configInput(PW_INPUT, "Pulse width modulation");
+		configInput(DIST_X_INPUT, "Distortion X");
+		configInput(DIST_Y_INPUT, "Distortion Y");
 		configOutput(SIN_OUTPUT, "Sine");
 		configOutput(TRI_OUTPUT, "Triangle");
 		configOutput(SAW_OUTPUT, "Sawtooth");

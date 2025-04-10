@@ -22,6 +22,14 @@ struct SIGMA : BidooModule {
 
 	SIGMA() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
+		for (int i = 0; i < NUM_INPUTS; i++) {
+			configInput(IN_INPUT + i, "In " + std::to_string(i + 1));
+		}
+
+		for (int i = 0; i < NUM_OUTPUTS; i++) {
+			configOutput(OUT_OUTPUT + i, "Out " + std::to_string(i + 1));
+		}
 	}
 
 	void process(const ProcessArgs &args) override {

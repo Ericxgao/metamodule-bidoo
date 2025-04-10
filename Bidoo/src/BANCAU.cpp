@@ -91,6 +91,26 @@ struct BANCAU : BidooModule {
 		configParam(RISEEXP2_PARAM, 0.f, 1.f, 0.f, "Exp");
 		configParam(FALLEXP2_PARAM, 0.f, 1.f, 0.f, "Exp");
 		configParam(CYCLE2_PARAM, 0.f, 1.f, 0.f, "Cycle");
+		
+		configInput(IN1_INPUT, "In 1");
+		configInput(TRIG1_INPUT, "Trigger 1");
+		configInput(VOCT1_INPUT, "V/Oct 1");
+		configInput(RISECV1_INPUT, "Rise CV 1");
+		configInput(FALLCV1_INPUT, "Fall CV 1");
+		configInput(BOTHCV1_INPUT, "Both CV 1");
+		configInput(IN2_INPUT, "In 2");
+		configInput(TRIG2_INPUT, "Trigger 2");
+		configInput(VOCT2_INPUT, "V/Oct 2");
+		configInput(RISECV2_INPUT, "Rise CV 2");
+		configInput(FALLCV2_INPUT, "Fall CV 2");
+		configInput(BOTHCV2_INPUT, "Both CV 2");
+		
+		configOutput(PULSE1_OUTPUT, "Pulse 1");
+		configOutput(END1_OUTPUT, "End 1");
+		configOutput(OUT1_OUTPUT, "Out 1");
+		configOutput(BP2_OUTPUT, "Bipolar 2");
+		configOutput(END2_OUTPUT, "End 2");
+		configOutput(OUT2_OUTPUT, "Out 2");
 	}
 
 	void process(const ProcessArgs &args) override {

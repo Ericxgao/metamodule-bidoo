@@ -44,6 +44,14 @@ struct FREIN : BidooModule {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(TRIG_PARAM, 0.0f, 1.0f, 0.0f, "Trig");
 		configParam(SPEED_PARAM, 0.5f, 3.0f, 1.0f, "Speed");
+		configParam(START_PARAM, 0.0f, 1.0f, 0.0f, "Start");
+		
+		configInput(INPUT, "Audio");
+		configInput(TRIG_INPUT, "Trigger");
+		configInput(START_INPUT, "Start");
+		configInput(SPEED_INPUT, "Speed");
+		
+		configOutput(OUTPUT, "Audio");
 	}
 
 	void process(const ProcessArgs &args) override {

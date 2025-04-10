@@ -49,7 +49,13 @@ struct HUITRE : BidooModule {
 			configParam(PATTERN_PARAM+i, 0.0f, 10.0f,0.00f+ i*10.0f/8.0f);
 			configParam(CV1_PARAM+i, 0.0f, 10.0f, 0.0f);
 			configParam(CV2_PARAM+i, 0.0f, 10.0f, 0.0f);
+
+			configOutput(PATTERNTRIG_OUTPUT+i, "Pattern trigger " + std::to_string(i + 1));
 		}
+		configOutput(PATTERN_OUTPUT, "Pattern");
+		configOutput(CV1_OUTPUT, "CV 1");
+		configOutput(CV2_OUTPUT, "CV 2");
+		configInput(MEASURE_INPUT, "Measure");
   }
 
   void process(const ProcessArgs &args) override;

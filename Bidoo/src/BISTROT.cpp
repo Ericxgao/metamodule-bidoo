@@ -35,6 +35,22 @@ struct BISTROT : BidooModule {
 
 	BISTROT() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
+		configInput(INPUT, "Input");
+		configInput(ADCCLOCK_INPUT, "ADC Clock");
+		configInput(DACCLOCK_INPUT, "DAC Clock");
+		
+		// Fix BIT_INPUT configuration with a loop for all 8 bit inputs
+		for (int i = 0; i < 8; i++) {
+			configInput(BIT_INPUT + i, string::f("Bit %d Input", i));
+		}
+
+		configOutput(OUTPUT, "Output");
+		
+		// Also configure the bit outputs while we're at it
+		for (int i = 0; i < 8; i++) {
+			configOutput(BIT_OUTPUT + i, string::f("Bit %d Output", i));
+		}
 	}
 
 	~BISTROT() {

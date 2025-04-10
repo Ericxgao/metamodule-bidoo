@@ -88,6 +88,17 @@ struct OUAIVE : BidooModule {
 		configParam(SPEED_PARAM, -0.05, 10, 1.0);
 		configParam(CVSPEED_PARAM, -1.0f, 1.0f, 0.0f);
 
+		configInput(GATE_INPUT, "Gate");
+		configInput(POS_INPUT, "Position");
+		configInput(NB_SLICES_INPUT, "Nb slices");
+		configInput(READ_MODE_INPUT, "Read mode");
+		configInput(SPEED_INPUT, "Speed");
+		configInput(POS_RESET_INPUT, "Position reset");
+
+		configOutput(OUTL_OUTPUT, "Out L");
+		configOutput(OUTR_OUTPUT, "Out R");
+		configOutput(EOC_OUTPUT, "EOC");
+
 		playBuffer.resize(0);
 	}
 

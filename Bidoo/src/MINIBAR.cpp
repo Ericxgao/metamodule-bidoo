@@ -62,6 +62,11 @@ struct MINIBAR : BidooModule {
 		configParam(MIX_PARAM, 0.0f, 1.0f, 1.0f, "Mix");
 		configParam(LOOKAHEAD_PARAM, 0.0f, 200.0f, 0.0f, "Lookahead");
 		configParam(BYPASS_PARAM, 0.0f, 1.0f, 0.0f, "Bypass");
+
+		configInput(IN_L_INPUT, "In L");
+		configInput(SC_L_INPUT, "SC L");
+
+		configOutput(OUT_L_OUTPUT, "Out L");
 	}
 
 	void process(const ProcessArgs &args) override;

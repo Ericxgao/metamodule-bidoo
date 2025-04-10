@@ -25,7 +25,19 @@ struct MS : BidooModule {
 		NUM_LIGHTS
 	};
 
-	MS() { config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS); }
+	MS() { 
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS); 
+
+		configInput(L_INPUT, "L");
+		configInput(R_INPUT, "R");
+		configInput(M_INPUT, "M");
+		configInput(S_INPUT, "S");
+
+		configOutput(L_OUTPUT, "L");
+		configOutput(R_OUTPUT, "R");
+		configOutput(M_OUTPUT, "M");
+		configOutput(S_OUTPUT, "S");
+	}
 
 	void process(const ProcessArgs &args) override {
 		outputs[S_OUTPUT].setVoltage(0.5f * (inputs[L_INPUT].getVoltage() - inputs[R_INPUT].getVoltage()));

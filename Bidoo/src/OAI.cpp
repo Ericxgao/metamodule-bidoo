@@ -6,6 +6,7 @@
 #include "osdialog.h"
 #else
 #include "async_filebrowser.hh"
+#include "CoreModules/async_thread.hh"
 #endif
 #include "dep/waves.hpp"
 #include <mutex>
@@ -126,6 +127,12 @@ struct OAI : BidooModule {
 	bool play = false;
 	std::mutex mylock;
 
+#if defined(METAMODULE)
+	MetaModule::AsyncThread loadSampleAsync{this, [this]() {
+		this->loadSampleInternal();
+	}};
+#endif
+
 	OAI() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(START_PARAM, 0.0f, 1.0f, 0.0f);
@@ -147,6 +154,7 @@ struct OAI : BidooModule {
 	void process(const ProcessArgs &args) override;
 
 	void loadSample();
+	void loadSampleInternal();
 	void saveSample();
 
 	void onRandomize() override {
@@ -286,7 +294,7 @@ struct OAI : BidooModule {
 	}
 };
 
-void OAI::loadSample() {
+void OAI::loadSampleInternal() {
 	APP->engine->yieldWorkers();
 	channels[currentChannel].playBuffer = waves::getMonoWav(channels[currentChannel].lastPath, APP->engine->getSampleRate(), channels[currentChannel].waveFileName, channels[currentChannel].waveExtension,
 	 channels[currentChannel].sampleChannels, channels[currentChannel].sampleRate, channels[currentChannel].totalSampleCount);
@@ -295,12 +303,22 @@ void OAI::loadSample() {
 	vector<dsp::Frame<1>>(channels[currentChannel].playBuffer).swap(channels[currentChannel].playBuffer);
 }
 
+void OAI::loadSample() {
+#if defined(METAMODULE)
+	loadSampleAsync.run_once();
+#else
+	loadSampleInternal();
+#endif
+}
+
 void OAI::process(const ProcessArgs &args) {
+#if !defined(METAMODULE)
 	mylock.lock();
 	if (loading) {
 		loadSample();
 	}
 	mylock.unlock();
+#endif
 	if (channels[currentChannel].playBuffer.size()==0) {
 		lights[SAMPLE_LIGHT].setBrightness(1.0f);
 		lights[SAMPLE_LIGHT+1].setBrightness(0.0f);

@@ -6,9 +6,10 @@
 #include "osdialog.h"
 #else
 #include "async_filebrowser.hh"
+#include "CoreModules/async_thread.hh"
 #endif
 #include "dep/waves.hpp"
-#include <mutex>
+#include <atomic>
 
 using namespace std;
 
@@ -65,7 +66,13 @@ struct POUPRE : BidooModule {
 	std::string waveFileName;
 	std::string waveExtension;
 	dsp::SchmittTrigger presetTriggers[4];
-	std::mutex mylock;
+	std::atomic<bool> locked{false};
+
+#if defined(METAMODULE)
+	MetaModule::AsyncThread loadSampleAsync{this, [this]() {
+		this->loadSampleInternal();
+	}};
+#endif
 
 	POUPRE() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -86,7 +93,18 @@ struct POUPRE : BidooModule {
 	void process(const ProcessArgs &args) override;
 
 	void loadSample();
-	void saveSample();
+	void loadSampleInternal();
+
+	void lock() {
+		bool expected = false;
+		while (!locked.compare_exchange_strong(expected, true)) {
+			expected = false;
+		}
+	}
+
+	void unlock() {
+		locked.store(false);
+	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = BidooModule::dataToJson();
@@ -149,20 +167,41 @@ struct POUPRE : BidooModule {
 	}
 };
 
-void POUPRE::loadSample() {
+void POUPRE::loadSampleInternal() {
 	APP->engine->yieldWorkers();
+	
+	// Get extension and validate
+	std::string ext = rack::system::getExtension(lastPath);
+	std::string upperExt = rack::string::uppercase(ext);
+	if (upperExt != ".WAV" && upperExt != ".AIFF") {
+		// Invalid format - don't try to load
+		lastPath = "";
+		waveFileName = "";
+		waveExtension = "";
+		loading = false;
+		return;
+	}
+	
+	lock();
 	playBuffer = waves::getMonoWav(lastPath, APP->engine->getSampleRate(), waveFileName, waveExtension, sampleChannels, sampleRate, totalSampleCount);
+	unlock();
 	loading = false;
 
 	vector<dsp::Frame<1>>(playBuffer).swap(playBuffer);
 }
 
+void POUPRE::loadSample() {
+#if defined(METAMODULE)
+	loadSampleAsync.run_once();
+#else
+	loadSampleInternal();
+#endif
+}
+
 void POUPRE::process(const ProcessArgs &args) {
-	mylock.lock();
 	if (loading) {
 		loadSample();
 	}
-	mylock.unlock();
 	if (playBuffer.size()==0) {
 		lights[SAMPLE_LIGHT].setBrightness(1.0f);
 		lights[SAMPLE_LIGHT+1].setBrightness(0.0f);
@@ -324,19 +363,19 @@ struct POUPREWidget : BidooWidget {
 #ifndef METAMODULE
   		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
   		if (path) {
-				module->mylock.lock();
+				module->lock();
 				module->lastPath = path;
 				module->loading = true;
-				module->mylock.unlock();
+				module->unlock();
   			free(path);
   		}
 #else
 		async_osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL, [this](char *path) {
 			if (path) {
-				module->mylock.lock();
+				module->lock();
 				module->lastPath = path;
 				module->loading = true;
-				module->mylock.unlock();
+				module->unlock();
 				free(path);
 			}
 		});
@@ -347,10 +386,10 @@ struct POUPREWidget : BidooWidget {
 	void onPathDrop(const PathDropEvent& e) override {
 		Widget::onPathDrop(e);
 		POUPRE *module = dynamic_cast<POUPRE*>(this->module);
-		module->mylock.lock();
+		module->lock();
 		module->lastPath = e.paths[0];
 		module->loading = true;
-		module->mylock.unlock();
+		module->unlock();
 	}
 
   void appendContextMenu(ui::Menu *menu) override {

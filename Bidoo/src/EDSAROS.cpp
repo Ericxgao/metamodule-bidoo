@@ -17,6 +17,7 @@ Based on Laurent de Soras resampler for pitch shifting
 
 #if defined(METAMODULE)
 #include "async_filebrowser.hh"
+#include "CoreModules/async_thread.hh"
 #else
 #include "osdialog.h"
 #endif
@@ -102,8 +103,8 @@ struct EDSAROS : BidooModule {
 	std::string waveExtension;
 	vector<dsp::Frame<1>> loadingBuffer;
 	int channels=0;
-  int sampleRate=0;
-  int totalSampleCount=0;
+	int sampleRate=0;
+	int totalSampleCount=0;
 	rspl::InterpPack interp_pack;
 	rspl::MipMapFlt	mip_map;
 	rspl::MipMapFlt	rev_mip_map;
@@ -112,7 +113,6 @@ struct EDSAROS : BidooModule {
 	float *sample = NULL;
 	float *rev_sample = NULL;
 	bool loading = false;
-	std::mutex mylock;
 	int pos = 0;
 	dsp::DoubleRingBuffer<float,SIZE> audio[16];
 	bool play[16] = {false};
@@ -146,6 +146,13 @@ struct EDSAROS : BidooModule {
 	int direction[16] = {1};
   bool zeroCrossing = false;
   dsp::SchmittTrigger zeroCrossingTrigger;
+	std::atomic<bool> locked{false};
+
+#if defined(METAMODULE)
+	MetaModule::AsyncThread loadSampleAsync{this, [this]() {
+		this->loadSampleInternal();
+	}};
+#endif
 
 	EDSAROS() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -181,6 +188,18 @@ struct EDSAROS : BidooModule {
 	void process(const ProcessArgs &args) override;
 
 	void loadSample();
+	void loadSampleInternal();
+
+	void lock() {
+		bool expected = false;
+		while (!locked.compare_exchange_strong(expected, true)) {
+			expected = false;
+		}
+	}
+
+	void unlock() {
+		locked.store(false);
+	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = BidooModule::dataToJson();
@@ -296,11 +315,26 @@ struct EDSAROS : BidooModule {
 
 };
 
-void EDSAROS::loadSample() {
+void EDSAROS::loadSampleInternal() {
 	APP->engine->yieldWorkers();
-	mylock.lock();
+	
+	// Get extension and validate
+	std::string ext = rack::system::getExtension(lastPath);
+	std::string upperExt = rack::string::uppercase(ext);
+	if (upperExt != ".WAV" && upperExt != ".AIFF") {
+		// Invalid format - don't try to load
+		lastPath = "";
+		waveFileName = "";
+		waveExtension = "";
+		loading = false;
+		return;
+	}
+
+	lock();
 	loadingBuffer = waves::getMonoWav(lastPath, APP->engine->getSampleRate(), waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
 	if (loadingBuffer.size()>0) {
+		free(sample);
+		free(rev_sample);
 		sample = new float[2*totalSampleCount];
 		rev_sample = new float[2*totalSampleCount];
 
@@ -343,11 +377,18 @@ void EDSAROS::loadSample() {
 		}
 
 	}
-
-	mylock.unlock();
+	unlock();
 	loading = false;
 
 	vector<dsp::Frame<1>>(loadingBuffer).swap(loadingBuffer);
+}
+
+void EDSAROS::loadSample() {
+#if defined(METAMODULE)
+	loadSampleAsync.run_once();
+#else
+	loadSampleInternal();
+#endif
 }
 
 void EDSAROS::process(const ProcessArgs &args) {
@@ -717,12 +758,12 @@ struct EDSAROSDisplay : OpaqueWidget {
 
 	void drawSample(const DrawArgs &args) {
 		if (module->loadingBuffer.size()>0) {
-			module->mylock.lock();
+			module->lock();
   		std::vector<float> vL;
 			for (int i=0;i<module->totalSampleCount;i++) {
 				vL.push_back(module->loadingBuffer[i].samples[0]*module->params[EDSAROS::GAIN_PARAM].getValue());
 			}
-  		module->mylock.unlock();
+  		module->unlock();
   		size_t nbSample = vL.size();
 
   		if (nbSample>0) {
@@ -1063,7 +1104,7 @@ struct EDSAROSWidget : BidooWidget {
   		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
   		if (path) {
   			module->lastPath = path;
-				module->loading = true;
+			module->loading = true;
   			free(path);
   		}
 #endif

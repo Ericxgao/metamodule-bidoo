@@ -5,6 +5,7 @@
 #include "osdialog.h"
 #else
 #include "async_filebrowser.hh"
+#include "CoreModules/async_thread.hh"
 #endif
 #include <vector>
 #include "dep/lodepng/lodepng.h"
@@ -84,6 +85,13 @@ struct EMILE : BidooModule {
   bool a = false;
   dsp::SchmittTrigger rTrigger, gTrigger, bTrigger, aTrigger;
   float curve=0.0f;
+  std::atomic<bool> locked{false};
+
+#if defined(METAMODULE)
+	MetaModule::AsyncThread loadSampleAsync{this, [this]() {
+		this->loadSampleInternal();
+	}};
+#endif
 
 	EMILE() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -118,6 +126,18 @@ struct EMILE : BidooModule {
 	void process(const ProcessArgs &args) override;
 
 	void loadSample(std::string path);
+	void loadSampleInternal();
+	
+	void lock() {
+		bool expected = false;
+		while (!locked.compare_exchange_strong(expected, true)) {
+			expected = false;
+		}
+	}
+
+	void unlock() {
+		locked.store(false);
+	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = BidooModule::dataToJson();
@@ -151,10 +171,12 @@ struct EMILE : BidooModule {
 
 };
 
-void EMILE::loadSample(std::string path) {
-	loading = true;
+void EMILE::loadSampleInternal() {
+	APP->engine->yieldWorkers();
+	
+  lock();
   image.clear();
-	unsigned error = lodepng::decode(image, width, height, path, LCT_RGBA, 16);
+	unsigned error = lodepng::decode(image, width, height, lastPath, LCT_RGBA, 16);
 	if(error != 0)
   {
     #ifndef METAMODULE
@@ -163,12 +185,22 @@ void EMILE::loadSample(std::string path) {
 		lastPath = "";
 	}
   else {
-    lastPath = path;
     samplePos = 0;
   }
+  unlock();
 	loading = false;
 
   vector<unsigned char>(image).swap(image);
+}
+
+void EMILE::loadSample(std::string path) {
+	loading = true;
+	lastPath = path;
+#if defined(METAMODULE)
+	loadSampleAsync.run_once();
+#else
+	loadSampleInternal();
+#endif
 }
 
 void EMILE::process(const ProcessArgs &args) {

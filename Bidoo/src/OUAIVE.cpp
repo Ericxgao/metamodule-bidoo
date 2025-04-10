@@ -6,9 +6,11 @@
 #include <mutex>
 #include "dep/waves.hpp"
 #include <algorithm> // For std::min
+#include <atomic> // For std::atomic
 
 #if defined(METAMODULE)
 #include "async_filebrowser.hh"
+#include "CoreModules/async_thread.hh"
 #else
 #include "osdialog.h"
 #endif
@@ -65,11 +67,17 @@ struct OUAIVE : BidooModule {
 	dsp::SchmittTrigger trigModeTrigger;
 	dsp::SchmittTrigger readModeTrigger;
 	dsp::SchmittTrigger posResetTrigger;
-	std::mutex mylock;
+	std::atomic<bool> locked{false};
 	bool first = true;
 	int eoc=0;
 	bool pulse = false;
 	dsp::PulseGenerator eocPulse;
+	
+#if defined(METAMODULE)
+	MetaModule::AsyncThread loadSampleAsync{this, [this]() {
+		this->loadSampleInternal();
+	}};
+#endif
 
 	OUAIVE() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -86,6 +94,18 @@ struct OUAIVE : BidooModule {
 	void process(const ProcessArgs &args) override;
 
 	void loadSample();
+	void loadSampleInternal();
+
+	void lock() {
+		bool expected = false;
+		while (!locked.compare_exchange_strong(expected, true)) {
+			expected = false;
+		}
+	}
+
+	void unlock() {
+		locked.store(false);
+	}
 
 	json_t *dataToJson() override {
 		json_t *rootJ = BidooModule::dataToJson();
@@ -117,20 +137,28 @@ struct OUAIVE : BidooModule {
 	}
 };
 
-void OUAIVE::loadSample() {
+void OUAIVE::loadSampleInternal() {
 	if (lastPath.empty()) {
 		loading = false;
 		return;
 	}
 
 	APP->engine->yieldWorkers();
-	mylock.lock();
+	lock();
 	playBuffer = waves::getStereoWav(lastPath, APP->engine->getSampleRate(), 
 		waveFileName, waveExtension, channels, sampleRate, totalSampleCount);
-	mylock.unlock();
+	unlock();
 	loading = false;
 
 	vector<dsp::Frame<2>>(playBuffer).swap(playBuffer);
+}
+
+void OUAIVE::loadSample() {
+#if defined(METAMODULE)
+	loadSampleAsync.run_once();
+#else
+	loadSampleInternal();
+#endif
 }
 
 void OUAIVE::process(const ProcessArgs &args) {
@@ -185,10 +213,12 @@ void OUAIVE::process(const ProcessArgs &args) {
 			int xi = static_cast<int>(samplePos);
 			if (xi < playBuffer.size()) {
 				float xf = samplePos - xi;
+				lock();
 				float nextSample = (xi + 1 < playBuffer.size()) ? 
 					playBuffer[xi + 1].samples[0] : 
 					playBuffer[xi].samples[0];
 				float crossfaded = crossfade(playBuffer[xi].samples[0], nextSample, xf);
+				unlock();
 				outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
 				outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
 			}
@@ -198,19 +228,23 @@ void OUAIVE::process(const ProcessArgs &args) {
 			if (xi < playBuffer.size()) {
 				float xf = samplePos - xi;
 				if (outputs[OUTL_OUTPUT].isConnected() && outputs[OUTR_OUTPUT].isConnected()) {
+					lock();
 					float nextSampleL = (xi + 1 < playBuffer.size()) ? 
 						playBuffer[xi + 1].samples[0] : 
 						playBuffer[xi].samples[0];
 					float crossfadedL = crossfade(playBuffer[xi].samples[0], nextSampleL, xf);
-					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfadedL);
-
+					
 					float nextSampleR = (xi + 1 < playBuffer.size()) ? 
 						playBuffer[xi + 1].samples[1] : 
 						playBuffer[xi].samples[1];
 					float crossfadedR = crossfade(playBuffer[xi].samples[1], nextSampleR, xf);
+					unlock();
+					
+					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfadedL);
 					outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfadedR);
 				}
 				else {
+					lock();
 					float nextSampleL = (xi + 1 < playBuffer.size()) ? 
 						playBuffer[xi + 1].samples[0] : 
 						playBuffer[xi].samples[0];
@@ -221,6 +255,8 @@ void OUAIVE::process(const ProcessArgs &args) {
 						0.5f * (playBuffer[xi].samples[0] + playBuffer[xi].samples[1]),
 						0.5f * (nextSampleL + nextSampleR),
 						xf);
+					unlock();
+					
 					outputs[OUTL_OUTPUT].setVoltage(5.0f * crossfaded);
 					outputs[OUTR_OUTPUT].setVoltage(5.0f * crossfaded);
 				}
@@ -315,7 +351,7 @@ struct OUAIVEDisplay : OpaqueWidget {
 	void drawLayer(const DrawArgs& args, int layer) override {
 		if (layer == 1) {
 			if (module && module->playBuffer.size() > 0) {
-				module->mylock.lock();
+				module->lock();
 				std::vector<float> vL;
 				std::vector<float> vR;
 				vL.reserve(module->totalSampleCount); // Pre-allocate memory
@@ -330,7 +366,7 @@ struct OUAIVEDisplay : OpaqueWidget {
 						vR.push_back(module->playBuffer[i].samples[0]); // Copy mono to both channels
 					}
 				}
-				module->mylock.unlock();
+				module->unlock();
 				
 				size_t nbSample = vL.size();
 
@@ -544,7 +580,7 @@ struct OUAIVEWidget : BidooWidget {
 			}
 		});
 #else
-		char *path = osdialog_file(OSDIALOG_OPEN_DIR, dir.c_str(), NULL, NULL);
+		char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
 		if (path) {
 			module->samplePos = 0;
 			module->lastPath = path;

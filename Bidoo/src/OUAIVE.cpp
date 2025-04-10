@@ -161,7 +161,7 @@ void OUAIVE::process(const ProcessArgs &args) {
 				samplePos = totalSampleCount - 1.0f;
 		}
 	}	else if (trigMode == 1) {
-		play = (inputs[GATE_INPUT].getVoltage() > 0);
+		play = (inputs[GATE_INPUT].getVoltage() > 0.1f);
 		samplePos = clamp(inputs[POS_INPUT].getVoltage() * (totalSampleCount-1.0f) * 0.1f, 0.0f , totalSampleCount - 1.0f);
 	} else if ((trigMode == 2) && (playTrigger.process(inputs[GATE_INPUT].getVoltage()))) {
 		play = true;

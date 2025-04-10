@@ -1,9 +1,7 @@
 #include "plugin.hpp"
 #include "dsp/digital.hpp"
 #include "BidooComponents.hpp"
-#ifndef METAMODULE
 #include "osdialog.h"
-#endif
 #include <vector>
 #include "cmath"
 #include <iomanip>
@@ -464,7 +462,7 @@ void CANARD::process(const ProcessArgs &args) {
 	}
 	else if (trigMode == 2)
 	{
-		if (inputs[GATE_INPUT].getVoltage()>0)
+		if (inputs[GATE_INPUT].getVoltage()>0.1f)
 		{
 			play = true;
 			if (inputs[SLICE_INPUT].isConnected()) {

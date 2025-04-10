@@ -1525,7 +1525,7 @@ void ENCORE::process(const ProcessArgs &args) {
 			int tPT = nTracksAttibutes[currentPattern][i].getTrackPlayedTrig();
 
 			if ((currentTrack == i) && (params[RECORD_PARAM].getValue() == 1.0f)) {
-					if (inputs[GATE_INPUT].getVoltage()>0.0f) {
+					if (inputs[GATE_INPUT].getVoltage()>0.1f) {
 						if (!noteIncoming) {
 							noteIncoming = true;
 							nTrigsAttibutes[currentPattern][i][(long)trackHead[currentPattern][i]].setTrigActive(true);

@@ -47,7 +47,7 @@ void init(rack::Plugin *p) {
 	p->addModel(modelMS);
 	// // p->addModel(modelMU);
 	// p->addModel(modelOAI);
-	p->addModel(modelOUAIVE);
+	// p->addModel(modelOUAIVE);
 	p->addModel(modelPERCO);
 	// // p->addModel(modelPILOT);
 	// p->addModel(modelPOUPRE);

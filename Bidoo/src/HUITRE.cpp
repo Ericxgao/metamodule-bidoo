@@ -45,10 +45,10 @@ struct HUITRE : BidooModule {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(MODE_PARAM, 0.0f, 1.0f, 0.0f);
 		for (int i = 0; i < 8; i++) {
-			configParam(TRIG_PARAM+i, 0.0f, 10.0f, 0.0f);
-			configParam(PATTERN_PARAM+i, 0.0f, 10.0f,0.00f+ i*10.0f/8.0f);
-			configParam(CV1_PARAM+i, 0.0f, 10.0f, 0.0f);
-			configParam(CV2_PARAM+i, 0.0f, 10.0f, 0.0f);
+			configParam(TRIG_PARAM+i, 0.0f, 10.0f, 0.0f, "Trigger " + std::to_string(i + 1));
+			configParam(PATTERN_PARAM+i, 0.0f, 10.0f,0.00f+ i*10.0f/8.0f, "Pattern " + std::to_string(i + 1));
+			configParam(CV1_PARAM+i, 0.0f, 10.0f, 0.0f, "CV 1 " + std::to_string(i + 1));
+			configParam(CV2_PARAM+i, 0.0f, 10.0f, 0.0f, "CV 2 " + std::to_string(i + 1));
 
 			configOutput(PATTERNTRIG_OUTPUT+i, "Pattern trigger " + std::to_string(i + 1));
 		}

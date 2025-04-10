@@ -47,18 +47,18 @@ struct MOIRE : BidooModule {
 
 	MOIRE() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-    configParam(SAVE_PARAM, 0.0f, 1.0f, 0.0f);
-    configParam(TARGETSCENE_PARAM, 0.0f, 15.1f, 0.0f);
-    configParam(CURRENTSCENE_PARAM, 0.0f, 15.1f, 0.0f);
-    configParam(ADONF_PARAM, 0.0f, 1.0f, 0.0f);
-    configParam(NADA_PARAM, 0.0f, 1.0f, 0.0f);
-    configParam(MORPH_PARAM, 0.0f, 10.0f, 0.0f);
-    configParam(VOLTAGE_PARAM, 0.0f, 1.0f, 0.0f);
-		configParam(RND_PARAM, 0.0f, 1.0f, 0.0f);
+    configParam(SAVE_PARAM, 0.0f, 1.0f, 0.0f, "Save");
+    configParam(TARGETSCENE_PARAM, 0.0f, 15.1f, 0.0f, "Target scene");
+    configParam(CURRENTSCENE_PARAM, 0.0f, 15.1f, 0.0f, "Current scene");
+    configParam(ADONF_PARAM, 0.0f, 1.0f, 0.0f, "Adonf");
+    configParam(NADA_PARAM, 0.0f, 1.0f, 0.0f, "Nada");
+    configParam(MORPH_PARAM, 0.0f, 10.0f, 0.0f, "Morph");
+    configParam(VOLTAGE_PARAM, 0.0f, 1.0f, 0.0f, "Voltage");
+		configParam(RND_PARAM, 0.0f, 1.0f, 0.0f, "Randomize");
 
   	for (int i = 0; i < 16; i++) {
-      configParam(CONTROLS_PARAMS + i, 0.0f, 10.0f, 0.0f);
-      configParam(TYPE_PARAMS + i, 0.0f, 1.0f,  0.0f);
+      configParam(CONTROLS_PARAMS + i, 0.0f, 10.0f, 0.0f, "Control " + std::to_string(i + 1));
+      configParam(TYPE_PARAMS + i, 0.0f, 1.0f,  0.0f, "Type " + std::to_string(i + 1));
   	}
   }
 

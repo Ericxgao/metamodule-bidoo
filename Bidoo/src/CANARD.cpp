@@ -104,15 +104,15 @@ struct CANARD : BidooModule {
 
 	CANARD() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(RECORD_PARAM, 0.0f, 1.0f, 0.0f);
-		configParam(SAMPLE_START_PARAM, 0.0f, 10.0f, 0.0f);
-		configParam(LOOP_LENGTH_PARAM, 0.0f, 10.0f, 10.0f);
-		configParam(READ_MODE_PARAM, 0.0f, 2.0f, 0.0f);
-		configParam(SPEED_PARAM, -4.0f, 4.0f, 1.0f);
-		configParam(FADE_PARAM, 0.0f, 10.0f, 0.0f);
-		configParam(SLICE_PARAM, 0.0f, 10.0f, 0.0f);
-		configParam(CLEAR_PARAM, 0.0f, 1.0f, 0.0f);
-		configParam(THRESHOLD_PARAM, 0.01f, 10.0f, 1.0f);
+		configParam(RECORD_PARAM, 0.0f, 1.0f, 0.0f, "Record");
+		configParam(SAMPLE_START_PARAM, 0.0f, 10.0f, 0.0f, "Sample start");
+		configParam(LOOP_LENGTH_PARAM, 0.0f, 10.0f, 10.0f, "Loop length");
+		configParam(READ_MODE_PARAM, 0.0f, 2.0f, 0.0f, "Read mode");
+		configParam(SPEED_PARAM, -4.0f, 4.0f, 1.0f, "Speed");
+		configParam(FADE_PARAM, 0.0f, 10.0f, 0.0f, "Fade");
+		configParam(SLICE_PARAM, 0.0f, 10.0f, 0.0f, "Slice");
+		configParam(CLEAR_PARAM, 0.0f, 1.0f, 0.0f, "Clear");
+		configParam(THRESHOLD_PARAM, 0.01f, 10.0f, 1.0f, "Threshold");
 		configSwitch(MODE_PARAM, 0, 1, 0, "Slice mode", {"Off", "On"});
 
 		playBuffer.resize(0);

@@ -112,16 +112,16 @@ struct FORK : BidooModule {
 
 	FORK() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(PITCH_PARAM, -54.0f, 54.0f, 0);
-    configParam(PRESET_PARAM, 0.0f, 8.0f, 0.0f);
-    configParam(F_PARAM, 190.0f, 730.0f, 190.0f);
-    configParam(A_PARAM, 0.0f, 1.0f, 1.0f);
-    configParam(F_PARAM + 1.0f, 800.0f, 2100.0f, 1090.0f);
-    configParam(A_PARAM + 1, 0.0f, 2.0f, 1.0f);
-    configParam(F_PARAM + 2, 1500.0f, 3100.0f, 2440.0f);
-    configParam(A_PARAM + 2, 0.0f, 0.7f, 0.3f);
-    configParam(F_PARAM + 3, 3000.0f, 4700.0f, 3400.0f);
-    configParam(A_PARAM + 3, 0.0f, 0.3f, 0.2f);
+	configParam(PITCH_PARAM, -54.0f, 54.0f, 0, "Pitch");
+    configParam(PRESET_PARAM, 0.0f, 8.0f, 0.0f, "Preset");
+    configParam(F_PARAM, 190.0f, 730.0f, 190.0f, "F1");
+    configParam(A_PARAM, 0.0f, 1.0f, 1.0f, "A1");
+    configParam(F_PARAM + 1.0f, 800.0f, 2100.0f, 1090.0f, "F2");
+    configParam(A_PARAM + 1, 0.0f, 2.0f, 1.0f, "A2");
+    configParam(F_PARAM + 2, 1500.0f, 3100.0f, 2440.0f, "F3");
+    configParam(A_PARAM + 2, 0.0f, 0.7f, 0.3f, "A3");
+    configParam(F_PARAM + 3, 3000.0f, 4700.0f, 3400.0f, "F4");
+    configParam(A_PARAM + 3, 0.0f, 0.3f, 0.2f, "A4");
 
     configInput(FORMANT_TYPE_INPUT, "Formant Type");
     configInput(PITCH_INPUT, "1V/oct Pitch");

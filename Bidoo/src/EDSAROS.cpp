@@ -436,10 +436,7 @@ void EDSAROS::process(const ProcessArgs &args) {
 	updatePoints();
 
 	if (totalSampleCount>0) {
-		// Ensure we have at least 1 channel even when no pitch input is connected
-		int channels = std::max(inputs[PITCH_INPUT].getChannels(), 1);
-		
-		for (int i=0; i<channels; i++) {
+		for (int i=0; i<inputs[PITCH_INPUT].getChannels(); i++) {
 			if (inputs[TRIG_INPUT].getVoltage(i)>0.5f) {
 				if (!play[i]) {
 					voiceTime[i]=0.0f;
@@ -520,7 +517,6 @@ void EDSAROS::process(const ProcessArgs &args) {
 				}
 
 				if (play[i] || rel[i]) {
-					// Use a default pitch of 0 if no pitch input is connected
 					const long pitch = inputs[PITCH_INPUT].getVoltage(i) * depth;
 					voices[i].set_pitch(pitch);
 					rev_voices[i].set_pitch(pitch);
@@ -608,8 +604,7 @@ void EDSAROS::process(const ProcessArgs &args) {
 			}
 		}
 
-		// Set the output channel count to match our processed channels
-		outputs[OUT].setChannels(channels);
+		outputs[OUT].setChannels(inputs[PITCH_INPUT].getChannels());
 	}
 }
 

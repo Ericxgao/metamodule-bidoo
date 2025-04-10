@@ -33,10 +33,10 @@ struct LOURDE : BidooModule {
 
 	LOURDE() {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(WEIGHT1, -5.0f, 5.0f, 0.0f);
-    configParam(WEIGHT2, -5.0f, 5.0f, 0.0f);
-    configParam(WEIGHT3, -5.0f, 5.0f, 0.0f);
-    configParam(OUTFLOOR, -10.0f, 10.0f, 0.0f);
+		configParam(WEIGHT1, -5.0f, 5.0f, 0.0f, "Weight 1");
+    configParam(WEIGHT2, -5.0f, 5.0f, 0.0f, "Weight 2");
+    configParam(WEIGHT3, -5.0f, 5.0f, 0.0f, "Weight 3");
+    configParam(OUTFLOOR, -10.0f, 10.0f, 0.0f, "Out floor");
 
 		configInput(IN1, "In 1");
 		configInput(IN2, "In 2");

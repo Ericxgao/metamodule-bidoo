@@ -628,15 +628,9 @@ struct CANARDDisplay : OpaqueWidget {
 		if (layer == 1) {
 			if (module && (module->playBuffer.size()>0)) {
 				module->lock();
-				std::vector<float> vL;
-				std::vector<float> vR;
-				for (int i=0;i<module->totalSampleCount;i++) {
-					vL.push_back(module->playBuffer[i].samples[0]);
-					vR.push_back(module->playBuffer[i].samples[1]);
-				}
 				std::vector<int> s(module->slices);
 				module->unlock();
-				size_t nbSample = vL.size();
+				size_t nbSample = module->totalSampleCount;
 
 				nvgScissor(args.vg, 0, 0, width, 2*height+10);
 
@@ -680,14 +674,14 @@ struct CANARDDisplay : OpaqueWidget {
 				}
 				nvgStroke(args.vg);
 
-				if ((!module->loading) && (vL.size()>0)) {
+				if ((!module->loading) && (nbSample>0)) {
 
 					// Draw loop
 					nvgFillColor(args.vg, nvgRGBA(255, 255, 255, 60));
 					nvgStrokeWidth(args.vg, 1);
 					nvgBeginPath(args.vg);
 					nvgMoveTo(args.vg, (module->sampleStart + module->fadeLenght) * zoomWidth / nbSample + zoomLeftAnchor, 0);
-					nvgLineTo(args.vg, module->sampleStart * zoomWidth / vL.size() + zoomLeftAnchor, 2*height+10);
+					nvgLineTo(args.vg, module->sampleStart * zoomWidth / nbSample + zoomLeftAnchor, 2*height+10);
 					nvgLineTo(args.vg, (module->sampleStart + module->loopLength) * zoomWidth / nbSample + zoomLeftAnchor, 2*height+10);
 					nvgLineTo(args.vg, (module->sampleStart + module->loopLength - module->fadeLenght) * zoomWidth / nbSample + zoomLeftAnchor, 0);
 					nvgLineTo(args.vg, (module->sampleStart + module->fadeLenght) * zoomWidth / nbSample + zoomLeftAnchor, 0);
@@ -715,12 +709,12 @@ struct CANARDDisplay : OpaqueWidget {
 						nvgSave(args.vg);
 						Rect b = Rect(Vec(zoomLeftAnchor, 0), Vec(zoomWidth, height));
 						float invNbSample = 1.0f / nbSample;
-						size_t inc = std::max(vL.size()/zoomWidth/4,1.f);
+						size_t inc = std::max(nbSample/zoomWidth/4,1.f);
 						nvgBeginPath(args.vg);
-						for (size_t i = 0; i < vL.size(); i+=inc) {
+						for (size_t i = 0; i < nbSample; i+=inc) {
 							float x, y;
 							x = (float)i * invNbSample ;
-							y = (-1.f)*vL[i] * 0.5f + 0.5f;
+							y = (-1.f)*module->playBuffer[i].samples[0] * 0.5f + 0.5f;
 							Vec p;
 							p.x = b.pos.x + b.size.x * x;
 							p.y = b.pos.y + b.size.y * (1.0f - y);
@@ -739,10 +733,10 @@ struct CANARDDisplay : OpaqueWidget {
 
 						b = Rect(Vec(zoomLeftAnchor, height+10), Vec(zoomWidth, height));
 						nvgBeginPath(args.vg);
-						for (size_t i = 0; i < vR.size(); i+=inc) {
+						for (size_t i = 0; i < nbSample; i+=inc) {
 							float x, y;
 							x = (float)i * invNbSample;
-							y = (-1.f)*vR[i] * 0.5f + 0.5f;
+							y = (-1.f)*module->playBuffer[i].samples[1] * 0.5f + 0.5f;
 							Vec p;
 							p.x = b.pos.x + b.size.x * x;
 							p.y = b.pos.y + b.size.y * (1.0f - y);

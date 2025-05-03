@@ -56,14 +56,14 @@ namespace waves {
       rack::dsp::SampleRateConverter<1> conv;
       conv.setRates(sampleRate, currentSampleRate);
       conv.setQuality(SPEEX_RESAMPLER_QUALITY_DESKTOP);
-      int outCount = sampleCount;
-      std::vector<rack::dsp::Frame<1>> subResult;
-      for (int i=0;i<sampleCount;i++) {
-        rack::dsp::Frame<1> frame;
-        frame.samples[0]=0.0f;
-        subResult.push_back(frame);
-      }
+      
+      // Calculate output buffer size based on ratio of sample rates with some extra padding
+      int outCount = ceil(sampleCount * (currentSampleRate / (float)sampleRate) * 1.5);
+      std::vector<rack::dsp::Frame<1>> subResult(outCount);
+      
+      // Process the conversion
       conv.process(&result[0], &sampleCount, &subResult[0], &outCount);
+      subResult.resize(outCount); // Resize to actual size used
       sampleCount = outCount;
       return subResult;
     }
@@ -133,15 +133,14 @@ namespace waves {
       rack::dsp::SampleRateConverter<2> conv;
       conv.setRates(sampleRate, currentSampleRate);
       conv.setQuality(SPEEX_RESAMPLER_QUALITY_DESKTOP);
-      int outCount = 16*sampleCount;
-      std::vector<rack::dsp::Frame<2>> subResult;
-      for (int i=0;i<outCount;i++) {
-        rack::dsp::Frame<2> frame;
-        frame.samples[0]=0.0f;
-        frame.samples[1]=0.0f;
-        subResult.push_back(frame);
-      }
+      
+      // Calculate output buffer size based on ratio of sample rates with some extra padding
+      int outCount = ceil(sampleCount * (currentSampleRate / (float)sampleRate) * 1.5);
+      std::vector<rack::dsp::Frame<2>> subResult(outCount);
+      
+      // Process the conversionbut a 4
       conv.process(&result[0], &sampleCount, &subResult[0], &outCount);
+      subResult.resize(outCount); // Resize to actual size used
       sampleCount = outCount;
       return subResult;
     }

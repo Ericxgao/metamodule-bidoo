@@ -156,16 +156,19 @@ namespace waves {
     format.sampleRate = sampleRate;
     format.bitsPerSample = 32;
 
-    int *pSamples = (int*)calloc(2*sample.size(),sizeof(int));
-    memset(pSamples, 0, 2*sample.size()*sizeof(int));
-    for (unsigned int i = 0; i < sample.size(); i++) {
-    	*(pSamples+2*i)= floor(sample[i].samples[0]*1990000000);
-    	*(pSamples+2*i+1)= floor(sample[i].samples[1]*1990000000);
+    // Make a copy of the sample to avoid race conditions
+    std::vector<rack::dsp::Frame<2>> sampleCopy(sample);
+    
+    int *pSamples = (int*)calloc(2*sampleCopy.size(),sizeof(int));
+    memset(pSamples, 0, 2*sampleCopy.size()*sizeof(int));
+    for (unsigned int i = 0; i < sampleCopy.size(); i++) {
+    	*(pSamples+2*i)= floor(sampleCopy[i].samples[0]*1990000000);
+    	*(pSamples+2*i+1)= floor(sampleCopy[i].samples[1]*1990000000);
     }
 
     drwav wav;
     drwav_init_file_write(&wav, path.c_str(), &format, NULL);
-    drwav_uint64 framesWritten = drwav_write_pcm_frames(&wav, 2*sample.size(), pSamples);
+    drwav_uint64 framesWritten = drwav_write_pcm_frames(&wav, sampleCopy.size(), pSamples);
     drwav_uninit(&wav);
 
     free(pSamples);

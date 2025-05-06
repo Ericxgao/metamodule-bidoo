@@ -272,26 +272,24 @@ void CANARD::saveSampleInternal() {
 }
 
 void CANARD::saveSample() {
-#if defined(METAMODULE)
-	saveSampleAsync.run_once();
-#else
 	saveSampleInternal();
-#endif
 }
 
 void CANARD::calcLoop() {
 	prevPlayedSlice = index;
 	index = 0;
-	int sliceStart = 0;;
+	int sliceStart = 0;
 	int sliceEnd = totalSampleCount > 0 ? totalSampleCount - 1 : 0;
-	if ((params[MODE_PARAM].getValue() == 1) && (slices.size()>0))
+	
+	// Only calculate slices if module is not loading and we have a valid buffer
+	if (!loading && !locked.load() && (params[MODE_PARAM].getValue() == 1) && (slices.size()>0))
 	{
 		index = round(clamp(params[SLICE_PARAM].getValue() + inputs[SLICE_INPUT].getVoltage(), 0.0f,10.0f)*(slices.size()-1)/10);
 		sliceStart = slices[index];
 		sliceEnd = (index < (slices.size() - 1)) ? (slices[index+1] - 1) : (totalSampleCount - 1);
 	}
 
-	if (totalSampleCount > 0) {
+	if (totalSampleCount > 0 && !loading && !locked.load()) {
 		sampleStart = rescale(clamp(inputs[SAMPLE_START_INPUT].getVoltage() + params[SAMPLE_START_PARAM].getValue(), 0.0f, 10.0f), 0.0f, 10.0f, sliceStart, sliceEnd);
 		loopLength = clamp(rescale(clamp(inputs[LOOP_LENGTH_INPUT].getVoltage() + params[LOOP_LENGTH_PARAM].getValue(), 0.0f, 10.0f), 0.0f, 10.0f, 0.0f, sliceEnd - sliceStart + 1),1.0f,sliceEnd-sampleStart+1);
 		fadeLenght = rescale(clamp(inputs[FADE_INPUT].getVoltage() + params[FADE_PARAM].getValue(), 0.0f, 10.0f), 0.0f, 10.0f,0.0f, floor(loopLength/2));
@@ -305,6 +303,13 @@ void CANARD::calcLoop() {
 }
 
 void CANARD::initPos() {
+	// Don't try to play if we're loading or don't have valid data
+	if (loading || locked.load() || totalSampleCount <= 0 || playBuffer.size() <= 0) {
+		samplePos = 0;
+		speedFactor = 1.0f;
+		return;
+	}
+	
 	if ((inputs[SPEED_INPUT].getVoltage() + params[SPEED_PARAM].getValue())>=0)
 	{
 		samplePos = sampleStart;
@@ -438,7 +443,7 @@ void CANARD::process(const ProcessArgs &args) {
 	calcLoop();
 
 	if (trigMode == 1) {
-		if (trigTrigger.process(inputs[TRIG_INPUT].getVoltage()) && (prevTrigState == 0.0f))
+		if (trigTrigger.process(inputs[TRIG_INPUT].getVoltage()) && (prevTrigState == 0.0f) && !loading && !locked.load())
 		{
 			initPos();
 			if ((slices.size() == 1) && (inputs[SLICE_INPUT].isConnected())) {
@@ -479,7 +484,7 @@ void CANARD::process(const ProcessArgs &args) {
 	}
 	else if (trigMode == 2)
 	{
-		if (inputs[GATE_INPUT].getVoltage()>0.1f)
+		if (inputs[GATE_INPUT].getVoltage()>0.1f && !loading && !locked.load())
 		{
 			play = true;
 			if (inputs[SLICE_INPUT].isConnected()) {
@@ -529,7 +534,7 @@ void CANARD::process(const ProcessArgs &args) {
 
 	if (play) {
 		newStop = true;
-		if (samplePos<totalSampleCount) {
+		if (!loading && !locked.load() && samplePos < totalSampleCount && totalSampleCount > 0 && playBuffer.size() > 0) {
 			if (fadeLenght>1000) {
 				if ((samplePos-sampleStart)<fadeLenght)
 					fadeCoeff = rescale(samplePos-sampleStart,0.0f,fadeLenght,0.0f,1.0f);
@@ -547,6 +552,10 @@ void CANARD::process(const ProcessArgs &args) {
 			outputs[OUTL_OUTPUT].setVoltage(crossfaded*fadeCoeff*5.0f);
 			crossfaded = crossfade(playBuffer[xi].samples[1], playBuffer[min(xi + 1,(int)totalSampleCount-1)].samples[1], xf);
 			outputs[OUTR_OUTPUT].setVoltage(crossfaded*fadeCoeff*5.0f);
+		}
+		else {
+			outputs[OUTL_OUTPUT].setVoltage(0.0f);
+			outputs[OUTR_OUTPUT].setVoltage(0.0f);
 		}
 	}
 	else {

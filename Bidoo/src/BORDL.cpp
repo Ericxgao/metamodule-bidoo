@@ -904,9 +904,11 @@ void BORDL::process(const ProcessArgs &args) {
 	}
 
 	if (gateOn) {
+		auto clamped_scale = std::clamp(patterns[playedPattern].scale + inputs[SCALE_INPUT].getVoltage(), 0.f, (float)quantizer::numScales);
+
 		pitch = std::get<0>(quant.closestVoltageInScale(clamp(patterns[playedPattern].CurrentStep().pitch + rndPitch,-4.0f,6.0f) * clamp(patterns[playedPattern].sensitivity
 			+ (inputs[SENSITIVITY_INPUT].isConnected() ? rescale(inputs[SENSITIVITY_INPUT].getVoltage(),0.f,10.f,0.1f,1.0f) : 0.0f),0.1f,1.0f) + inputs[TRANSPOSE_INPUT].getVoltage(),
-			clamp(patterns[playedPattern].rootNote + rescale(clamp(inputs[ROOT_NOTE_INPUT].getVoltage(), 0.0f,10.0f),0.0f,10.0f,0.0f,11.0f), 0.0f, 11.0f), patterns[playedPattern].scale + inputs[SCALE_INPUT].getVoltage()));
+			clamp(patterns[playedPattern].rootNote + rescale(clamp(inputs[ROOT_NOTE_INPUT].getVoltage(), 0.0f,10.0f),0.0f,10.0f,0.0f,11.0f), 0.0f, 11.0f), clamped_scale));
 	}
 
 	if (patterns[playedPattern].CurrentStep().slide) {
